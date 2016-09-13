@@ -10,7 +10,7 @@
     "start": "electron ./app/main.js",
     "test": "node ./test/contractTests.js",
     "package": "asar pack DeStore.app/Contents/app DeStore.app/Contents/Resources/app.asar",
-    "build": "electron-packager ./ DeStore --overwrite && cp electron.icns DeStore-darwin-x64/DeStore.app/Contents/Resources/electron.icns"
+    "build": "electron-packager ./ DeStore --prune --overwrite && cp electron.icns DeStore-darwin-x64/DeStore.app/Contents/Resources/electron.icns"
   },
   "repository": {
     "type": "git",

@@ -41,13 +41,17 @@ a:focus {
 /*----- Tabs -----*/
 .tab {
   height: 250px;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 .tabs {
   width:40%;
   display:inline-block;
   border-radius: 3px;
+}
+
+.form-signup {
+  overflow: hidden;
 }
 
 .accounts {

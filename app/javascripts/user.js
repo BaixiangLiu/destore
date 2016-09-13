@@ -71,23 +71,29 @@ $('.uploadQ').on({
   }
 });
 
+    
+
+
 // DROPZONE FUNCTIONALITY
 document.ondragover = document.ondrop = (ev) => {
   ev.preventDefault();
 };
 
 $('.upload-drop-zone').on('dragover', (ev) => {
-  $('.upload-drop-zone').css('background-color', '#4c83db');
+  $('.upload-drop-zone').css('background-color', '#f9f2fc');
+  $('.logoCenter').css('opacity', 1);
 });
 
 $('.upload-drop-zone').on('dragleave', (ev) => {
   $('.upload-drop-zone').css('background-color', 'white');
+  $('.logoCenter').css('opacity', 0.3);
 });
 
 //ON FILE DROP
 $('.upload-drop-zone').on('drop', (ev) => {
   ev.preventDefault();
   $('.upload-drop-zone').css('background-color', 'white');
+  $('.logoCenter').css('opacity', 0.3);
   var filePath = ev.originalEvent.dataTransfer.files[0].path;
   var fileSize = Sender.filesize(filePath);
   console.log(filePath);
