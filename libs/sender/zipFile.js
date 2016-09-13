@@ -1,4 +1,7 @@
 const fs = require('fs-extra');
+const config = require('../config/config.js');
+const path = require('path');
+const promisify = require('es6-promisify');
 
 function copyFile(source, target, callback) {
   var cbCalled = false;
@@ -7,7 +10,7 @@ function copyFile(source, target, callback) {
   start.on("error", function(err) {
     done(err);
   });
-  var end = fs.createWriteStream(target);
+  var end = fs.createWriteStream(config.files.upload + path.basename(source));
   end.on("error", function(err) {
     done(err);
   });
@@ -18,10 +21,10 @@ function copyFile(source, target, callback) {
 
   function done(err) {
     if (!cbCalled) {
-      callback(err);
+      callback(err, true);
       cbCalled = true;
     }
   }
 }
 
-module.exports = copyFile;
+module.exports = promisify(copyFile);

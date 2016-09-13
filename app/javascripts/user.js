@@ -22,9 +22,10 @@ configs.contracts.deStore = DeStoreAddress.get();
 Ethereum.changeAccount(config.get('user.accountIndex'));
 $('#accountID').html(Ethereum.account);
 
+updateTotalCost();
+
 Sender.listUploadDb()
   .then((docs) => {
-    console.log(docs);
     docs.map((item) => {
       if (item.isUploaded) {
         $('#fileTable').append(`
@@ -49,6 +50,7 @@ Sender.listUploadDb()
           </div>`);
       }
     });
+    updateTotalCost();
   });
 
 $('.dragdropQ').on({
@@ -94,7 +96,8 @@ $('.upload-drop-zone').on('drop', (ev) => {
   //check if it's already there in the list
   // <div class="cost">${((fileSize/(1024*1024*1024)) * 10).toFixed(3) } cents/month</div>
 
-  Sender.copyFile(filePath)
+  // Sender.zipFile(filePath)
+  Sender.encrypt(filePath, 'hello')
     .then((res) => {
       console.log(res);
       $('#fileTable').append(`
@@ -102,7 +105,7 @@ $('.upload-drop-zone').on('drop', (ev) => {
           <div class="basename">${path.basename(filePath)}</div>
           <div class="filesize">${bytesMag(fileSize)}</div>
           <div class="cost">
-            <span class="cost-value">N/A</span>
+            <span class="cost-value"></span>
             <span class="cost-demo"><span>
           </div>
           <input class="recNum" type="number" placeholder="file ether value"></input>
@@ -138,6 +141,7 @@ $('body').on('click', '.mount', function() {
       $(this).replaceWith(`
         <input class="recNum" type="number" placeholder="# of hosts"></input>
         <button class="btn-up distribute">Distribute</button>`);
+      updateTotalCost();
     })
     .catch(err => {
       console.error(err);
@@ -161,6 +165,8 @@ $('body').on('click', '.distribute', function() {
       $(this).replaceWith(`
         <button class="btn-up retrieve">Retrieve</button>
       `);
+
+      updateTotalCost();
     })
     .catch((err) => {
       console.log(err);
@@ -243,3 +249,14 @@ $(document).on('click', '.signOut', () => {
   config.clear('startup');
   window.location = '../html/signup.html';
 });
+
+function updateTotalCost() {
+  const $totalCost = $('#cost');
+  const $fileCosts = $('.cost-value');
+  let totalCost = 0;
+  for (let i = 0; i < $fileCosts.length; i++) {
+    totalCost += Number($fileCosts.eq(i).text());
+  }
+  console.log(totalCost);
+  $totalCost.text(totalCost.toFixed(3));
+}
