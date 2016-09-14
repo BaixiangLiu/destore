@@ -107,7 +107,7 @@ $('.upload-drop-zone').on('drop', (ev) => {
             <span class="cost-value"></span>
             <span class="cost-demo"><span>
           </div>
-          <input class="recNum" type="number" placeholder="file ether value"></input>
+          <input class="recNum" type="number" placeholder="Ether/MB"></input>
           <button class="btn-up mount">Mount</button>
         </div>`);
     })
@@ -139,7 +139,7 @@ $('body').on('click', '.mount', function() {
         .text((fileSize * fileValue).toFixed(3));
 
       $(this).replaceWith(`
-        <input class="recNum" type="number" placeholder="# of hosts"></input>
+        <input class="recNum" type="number" placeholder="# of hosts""></input>
         <button class="btn-up distribute">Distribute</button>`);
       updateTotalCost();
     })

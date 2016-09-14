@@ -107,9 +107,11 @@ setInterval(function() {
 //Downloads all files available in contract (every minute)
 updateHostInfos();
 hostAll();
+updateSize();
 setInterval(function() {
   updateHostInfos();
   hostAll();
+  updateSize();
 }, 1000);
 
 $('body').on('click', '.hostAll', function() {
@@ -139,11 +141,27 @@ function updateHostInfos() {
         if (docs[i].isHosted === true) {
           storageSize += docs[i].fileSize;
         }
-
         const hashAddress = docs[i].hashAddress;
         // const hashDiv = $('<div></div>');
         // hashDiv.text(hashAddress);
         $('.dash__storage__hashes').append(hashAddress + '<br>');
+      }
+      storageSize = bytesMag(storageSize);
+      $('.dash__storage__size__num').text(storageSize);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+function updateSize() {
+  Receiver.listHostDb()
+    .then(docs => {
+      let storageSize = 0;
+      for (let i = 0; i < docs.length; i++) {
+        if (docs[i].isHosted === true) {
+          storageSize += docs[i].fileSize;
+        }
       }
       storageSize = bytesMag(storageSize);
       $('.dash__storage__size__num').text(storageSize);
@@ -186,7 +204,7 @@ function withdrawAll() {
 function hostAll() {
   Receiver.hostAll()
     .then(docs => {
-      updateHostInfos();
+
     })
     .catch(err => {
       console.error(err);
