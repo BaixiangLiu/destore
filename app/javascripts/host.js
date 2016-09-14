@@ -105,10 +105,13 @@ setInterval(function() {
 }, 1000);
 
 //Downloads all files available in contract (every minute)
+updateHostInfos();
 hostAll();
 setInterval(function() {
+  updateHostInfos();
   hostAll();
 }, 1000);
+
 $('body').on('click', '.hostAll', function() {
   hostAll();
 });
@@ -127,6 +130,7 @@ function updateHostInfos() {
       return Receiver.listHostDb();
     })
     .then(docs => {
+
       console.log(docs);
       let storageSize = 0;
       $('.dash__storage__hashes').text('');
@@ -222,5 +226,6 @@ Ethereum.deStore().receiverGetStorage({from: Ethereum.account})
   .catch(err => {
     console.error(err);
   });
+
 
 updateHostInfos();
