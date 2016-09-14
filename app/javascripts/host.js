@@ -102,13 +102,13 @@ contractBalance();
 setInterval(function() {
   checkBalance();
   contractBalance();
-}, 60000);
+}, 1000);
 
 //Downloads all files available in contract (every minute)
 hostAll();
 setInterval(function() {
   hostAll();
-}, 60 * 1000);
+}, 1000);
 $('body').on('click', '.hostAll', function() {
   hostAll();
 });

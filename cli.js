@@ -205,25 +205,25 @@ if (program.testrpc) {
     .then(tx => {
       Ethereum.changeAccount(1);
       console.log(Ethereum.account);
-      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(2);
       console.log(Ethereum.account);
 
-      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(3);
       console.log(Ethereum.account);
 
-      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(4);
       console.log(Ethereum.account);
 
-      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(arr => {
       console.log('Receiver Accounts');
@@ -237,7 +237,6 @@ if (program.testrpc) {
 if (program.receiverInfo) {
   Ethereum.init();
   config.contracts.deStore = DeStoreAddress.get();
-
   Ethereum.deStore().getReceiverIndex()
     .then(index => {
       console.log('Reciever Index', index);
