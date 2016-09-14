@@ -14,7 +14,9 @@ module.exports = promisify((filePath, password, callback) => {
   // encrypt content
   var encrypt = crypto.createCipher('aes192', password);
   // write file
-  var end = fs.createWriteStream(config.files.upload + path.basename(filePath));
+  var encrpytedFilePath = config.files.upload  + path.basename(filePath);
+  var end = fs.createWriteStream(encrpytedFilePath);
+  encrpytedFilePath = path.normalize(encrpytedFilePath);
   //execute by piping
   start.on('error', function(err) {
     callback(err);
@@ -23,7 +25,7 @@ module.exports = promisify((filePath, password, callback) => {
     callback(err);
   });
   end.on('close', function(err) {
-    callback(err, true);
+    callback(err, encrpytedFilePath);
   });
 
   start.pipe(encrypt).pipe(zip).pipe(end);

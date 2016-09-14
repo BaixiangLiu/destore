@@ -13,7 +13,8 @@ const path = require('path');
 module.exports = promisify((callback) => {
   Host.db.find({account: Ethereum.account, isHosted: false}, (err, docs) => {
     if (err || docs.length === 0) {
-      callback(new Error('Could not find a doc with isHosted of false'), null);
+      // this error was bad
+      // callback(new Error('Could not find a doc with isHosted of false'), null);
       return;
     }
     const hosted = []; // the hashes of the hosted files

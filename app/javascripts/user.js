@@ -72,8 +72,6 @@ $('.uploadQ').on({
 });
 
 
-
-
 // DROPZONE FUNCTIONALITY
 document.ondragover = document.ondrop = (ev) => {
   ev.preventDefault();
@@ -98,11 +96,12 @@ $('.upload-drop-zone').on('drop', (ev) => {
   var fileSize = Sender.filesize(filePath);
 
   Sender.encrypt(filePath, 'hello')
-    .then((res) => {
-      console.log(res);
+    .then((encrpytedFilePath) => {
+      console.log(encrpytedFilePath);
+      const newFileName = path.basename(encrpytedFilePath);
       $('#fileTable').append(`
-        <div data-filepath="${filePath}" data-filesize=${fileSize} class="file">
-          <div class="basename">${path.basename(filePath)}</div>
+        <div data-filepath="${encrpytedFilePath}" data-filesize=${fileSize} class="file">
+          <div class="basename">${newFileName}</div>
           <div class="filesize">${bytesMag(fileSize)}</div>
           <div class="cost">
             <span class="cost-value"></span>
@@ -159,10 +158,9 @@ $('body').on('click', '.distribute', function() {
       $(this).closest('.file').find('.recNum').remove();
 
       var currentValue = $(this).closest('.file').find('.cost-value').text();
-      currentValue = currentValue * userNum;
-
+      currentValue = Number(currentValue) * userNum;
+      currentValue = currentValue.toFixed(3);
       $(this).closest('.file').find('.cost-value').text(currentValue);
-
       $(this).replaceWith(`
         <button class="btn-up retrieve">Retrieve</button>
       `);
