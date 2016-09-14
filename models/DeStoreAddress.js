@@ -7,6 +7,7 @@ module.exports = {
     fs.writeFileSync(pathway, address);
   },
   get: () => {
-    return fs.readFileSync(pathway, 'utf8');
+    const address = fs.readFileSync(pathway, 'utf8');
+    return address.trim();
   }
 };

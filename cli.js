@@ -23,8 +23,8 @@ program
   .option('reset-upload')
   .option('create-account')
   .option('unlock')
-  .option('testrpc', 'Set up testrpc env');
-
+  .option('testrpc', 'Set up testrpc env')
+  .option('receiverInfo');
 program
   .command('save <file>')
   .action(function (file) {
@@ -191,24 +191,60 @@ if (program.testrpc) {
     gas: 3000000,
     gasValue: 20000000000
   };
+  const storage = 5 * 1024 * 1024 * 1024;
 
+  console.log(Ethereum.accounts);
   Ethereum.deploy('DeStore', [], deployOptions)
     .then(instance => {
       config.contracts.deStore = instance.address;
       console.log('Deloyed DeStore', instance.address);
       DeStoreAddress.save(instance.address);
-      const storage = 5 * 1024 * 1024 * 1024;
-      return Promise.all([
-        Ethereum.deStore().senderAdd({from: Ethereum.accounts[0], gas: 300000, gasValue: 20000000000}),
-        Ethereum.deStore().receiverAdd(storage, {from: Ethereum.accounts[1], gas: 300000, gasValue: 20000000000}),
-        Ethereum.deStore().receiverAdd(storage, {from: Ethereum.accounts[2], gas: 300000, gasValue: 20000000000}),
-        Ethereum.deStore().receiverAdd(storage, {from: Ethereum.accounts[3], gas: 300000, gasValue: 20000000000}),
-        Ethereum.deStore().receiverAdd(storage, {from: Ethereum.accounts[4], gas: 300000, gasValue: 20000000000}),
-      ]);
+      Ethereum.changeAccount(0);
+      return Ethereum.deStore().senderAdd({from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(1);
+      console.log(Ethereum.account);
+      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(2);
+      console.log(Ethereum.account);
+
+      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(3);
+      console.log(Ethereum.account);
+
+      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(4);
+      console.log(Ethereum.account);
+
+      return Ethereum.deStore().receiverAdd(1000000, {from: Ethereum.account});
     })
     .then(arr => {
       console.log('Receiver Accounts');
       console.log(arr);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+if (program.receiverInfo) {
+  Ethereum.init();
+  config.contracts.deStore = DeStoreAddress.get();
+
+  Ethereum.deStore().getReceiverIndex()
+    .then(index => {
+      console.log('Reciever Index', index);
+      return Ethereum.deStore().getReceiverList();
+    })
+    .then(list => {
+      console.log('list', list);
     })
     .catch(err => {
       console.error(err);

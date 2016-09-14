@@ -52,6 +52,7 @@ body {
   line-height: 15px;
 }
 
+
 .filesize {
   position: absolute;
   right: 60%;
@@ -261,4 +262,10 @@ body {
 #dropzone {
   text-align: center;
   font-size: 20px;
+}
+
+
+.fileheader {
+  color: gray;
+  font-weight: bold;
 }

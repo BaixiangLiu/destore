@@ -15,7 +15,8 @@ const filesConfig = {
   // files: user + 'files',
   // watch: user + 'watch',
   upload: __dirname + '/../../files/upload/',
-  host: __dirname + '/../../files/host/'
+  host: __dirname + '/../../files/host/',
+  decrypt: __dirname + '/../../files/decrypt/'
 };
 
 module.exports = filesConfig;

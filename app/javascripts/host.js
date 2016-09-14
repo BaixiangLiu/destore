@@ -18,6 +18,7 @@ IPFS.daemon();
 
 //TESTING
 configs.contracts.deStore = DeStoreAddress.get();
+
 Ethereum.changeAccount(config.get('user.accountIndex'));
 
 //Makes encrypt/download folder (hidden) if not made
@@ -126,7 +127,10 @@ function updateHostInfos() {
       return Receiver.listHostDb();
     })
     .then(docs => {
+      console.log(docs);
       let storageSize = 0;
+      $('.dash__storage__hashes').text('');
+
       for (let i = 0; i < docs.length; i++) {
         if (docs[i].isHosted === true) {
           storageSize += docs[i].fileSize;
@@ -135,7 +139,7 @@ function updateHostInfos() {
         const hashAddress = docs[i].hashAddress;
         // const hashDiv = $('<div></div>');
         // hashDiv.text(hashAddress);
-        $('.dash__storage__hashes').text(hashAddress + '<br>');
+        $('.dash__storage__hashes').append(hashAddress + '<br>');
       }
       storageSize = bytesMag(storageSize);
       $('.dash__storage__size__num').text(storageSize);
@@ -153,7 +157,7 @@ function contractBalance() {
     .then(amounts => {
       console.log(amounts);
       // $('#dash__balance__value').text(amounts[0]);
-      $('#dash__balance__contract__value').text(amounts[0]);
+      $('#dash__balance__contract__value').text(amounts[0].toFixed(3));
     })
     .catch(err => {
       console.error(err);

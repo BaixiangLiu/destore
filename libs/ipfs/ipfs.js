@@ -28,8 +28,7 @@ class IPFS {
         this.connect = true;
       })
       .catch((err) => {
-        console.log(err.code);
-        throw('Init: Could not connect to IPFS');
+        console.error(err);
       });
     return this._ipfs;
   }

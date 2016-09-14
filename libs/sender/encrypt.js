@@ -12,7 +12,7 @@ module.exports = promisify((filePath, password, callback) => {
   // zip content
   var zip = zlib.createGzip();
   // encrypt content
-  var encrypt = crypto.createCipher('aes-256-ctr', password);
+  var encrypt = crypto.createCipher('aes192', password);
   // write file
   var end = fs.createWriteStream(config.files.upload + path.basename(filePath));
   //execute by piping

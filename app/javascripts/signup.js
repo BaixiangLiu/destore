@@ -9,7 +9,6 @@ const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
 
 //TESTING
 configs.contracts.deStore = DeStoreAddress.get();
-
 $(document).ready(function() {
   Ethereum.init();
   $('body').css('overflow', 'hidden');

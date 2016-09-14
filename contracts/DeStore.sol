@@ -394,4 +394,8 @@ contract DeStore {
   function getReceiverIndex() constant returns (uint) {
     return receiverIndex;
   }
+
+  function getReceiverList() constant returns (address[]) {
+    return availReceivers;
+  }
 }

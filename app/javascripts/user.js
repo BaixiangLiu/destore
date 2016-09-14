@@ -71,7 +71,7 @@ $('.uploadQ').on({
   }
 });
 
-    
+
 
 
 // DROPZONE FUNCTIONALITY
@@ -96,13 +96,7 @@ $('.upload-drop-zone').on('drop', (ev) => {
   $('.logoCenter').css('opacity', 0.3);
   var filePath = ev.originalEvent.dataTransfer.files[0].path;
   var fileSize = Sender.filesize(filePath);
-  console.log(filePath);
-  //check if it's a folder
 
-  //check if it's already there in the list
-  // <div class="cost">${((fileSize/(1024*1024*1024)) * 10).toFixed(3) } cents/month</div>
-
-  // Sender.zipFile(filePath)
   Sender.encrypt(filePath, 'hello')
     .then((res) => {
       console.log(res);
@@ -125,8 +119,9 @@ $('.upload-drop-zone').on('drop', (ev) => {
 
 $('body').on('click', '.mount', function() {
   var filePath = $(this).closest('.file').data('filepath');
+  var fileName = path.basename(filePath);
   var fileValue = $(this).closest('.file').find('.recNum').val();
-  fileValue = fileValue / 1028 / 1028;
+  fileValue = fileValue / 1024 / 1024;
   var fileSize;
   console.log(filePath);
   Sender.mountFile(filePath, fileValue)
@@ -137,9 +132,9 @@ $('body').on('click', '.mount', function() {
     })
     .then((hashes) => {
       console.log(hashes);
-      return hashes[0];
+      return hashes;
     })
-    .then(() => {
+    .then(balance => {
       $(this).closest('.file').find('.recNum').remove();
       $(this).closest('.file').find('.cost-value')
         .text((fileSize * fileValue).toFixed(3));
@@ -171,8 +166,12 @@ $('body').on('click', '.distribute', function() {
       $(this).replaceWith(`
         <button class="btn-up retrieve">Retrieve</button>
       `);
-
       updateTotalCost();
+      console.log(fileName);
+      return Sender.payFile(fileName);
+    })
+    .then(balance => {
+      $('#balance').text(balance.toFixed(3));
     })
     .catch((err) => {
       console.log(err);
@@ -182,16 +181,21 @@ $('body').on('click', '.distribute', function() {
 $('body').on('click', '.retrieve', function() {
   const fileName = path.basename($(this).closest('.file').data('filepath'));
   Sender.retrieveFile(fileName)
-    .then((res) => {
-      console.log(fileName, 'written to ', res);
+    .then((writePath) => {
+      console.log(fileName, 'written to ', writePath);
+      return Sender.decrypt(writePath, 'hello');
+    })
+    .then(writePath => {
+      console.log(writePath);
     });
 });
 
+// not being used anymore but could be used later 09/14/2016
 $('body').on('click', '.pay', function() {
   const fileName = path.basename($(this).closest('.file').data('filepath'));
   Sender.payFile(fileName)
     .then(balance => {
-      console.log(balance);
+      $('#balance').text(balance.toFixed(3));
     })
     .catch(err => {
       console.error(err);
