@@ -1,2 +1,2 @@
-# core
-Decentralized File Storage built with Ethereum and IPFS
+# DeStore
+A Decentralized File Storage Platform built on Ethereum Blockchain Technology, and which uses the IPFS peer-to-peer hypermedia protocol to transfer files on a distributed web. Make and receive secure payments on DeStore with the Ethereum cryptocurrency, Ether. DeStore aims to help transition the Internet to an era of decentralization. This begins with our company, which integrates easy file transfer and secure cryptocurrency payments on a platform where computational power is provided by peers around the world.
