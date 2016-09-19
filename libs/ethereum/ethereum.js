@@ -9,6 +9,8 @@ const promisifiy = require('es6-promisify');
 const createAccount = require('./createAccount');
 const unlockAccount = require('./unlockAccount');
 
+const buildContracts = require('./buildContracts');
+
 const rpcConfig = config.rpc;
 const contractsConfig = config.contracts;
 
@@ -56,6 +58,14 @@ class Ethereum {
     return contract;
   }
 
+  /**
+  * Builds Solidity contracts.
+  * @ contractFiles - array - an array of contract.sol
+  * @ directoryPath - string - path where contract files are located. Optional. Will be taken from config
+  **/
+  buildContracts(contractFiles, directoryPath) {
+    return buildContracts(contractFiles, directoryPath);
+  }
 
   /**
    * initializes the RPC connection with the local Ethereum node
