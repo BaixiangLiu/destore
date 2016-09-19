@@ -129,7 +129,7 @@ class IPFS {
   **/
   links(hashAddress) {
     return promisify((hashAddress, callback) => {
-      this._ipfs.object.links('QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW')
+      this._ipfs.object.links(hashAddress)
         .then(res => {
           res.map(DAGLink => {
             DAGLink.hashAddress = multihashes.toB58String(DAGLink.hash);

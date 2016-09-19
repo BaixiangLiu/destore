@@ -20,7 +20,6 @@ class Ethereum {
 
     this.account = null;
     this.accounts = [];
-    this.gasValue = null;
 
     // default options for destore methods
     /**
@@ -47,6 +46,7 @@ class Ethereum {
    * @returns {Object} built contract
    **/
   _getBuiltContract(contractName) {
+    this.init();
     let contract;
     try {
       contract = require(contractsConfig.built + contractName + '.sol.js');
@@ -95,6 +95,7 @@ class Ethereum {
    * @returns account
    **/
   changeAccount(index) {
+    this.init();
     if (index < 0 || index >= this.accounts.length) {
       return this.account;
     } else {
@@ -129,6 +130,7 @@ class Ethereum {
    * @index {Number} index of the account to check the balance of in Ether
    **/
   getBalanceEther(index) {
+    this.init();
     let amount;
     if (!index) {
       amount = this._web3.eth.getBalance(this.account);
@@ -145,6 +147,7 @@ class Ethereum {
    * @index {Number} index of the account to check the balance of in wei
    **/
   getBalanceWei(index) {
+    this.init();
     let amount;
     if (!index) {
       amount = this._web3.eth.getBalance(this.account);
@@ -162,6 +165,7 @@ class Ethereum {
    * @return {Number} - wei amount
    **/
   toWei(amount) {
+    this.init();
     return Number(this._web3.toWei(amount, 'ether').toString());
   }
 
@@ -171,6 +175,7 @@ class Ethereum {
    * @return {Number} - Ether amount
    **/
   toEther(amount) {
+    this.init();
     return Number(this._web3.fromWei(amount, 'ether').toString());
   }
 
@@ -182,7 +187,6 @@ class Ethereum {
    **/
   deploy(contractName, args, options) {
     this.init();
-
     const contract = this._getBuiltContract(contractName);
     // need to add more default options
     if (!options) {
@@ -245,6 +249,7 @@ class Ethereum {
    * @return {Object} instance you can call watch(), get(), stopWatching()
    **/
   watchAt(contractName, contractAddress, method, filter) {
+    this.init();
     const contractInstance = this.execAt(contractName, contractAddress);
     let event = contractInstance[method];
     event = event({}, filter);
@@ -259,6 +264,7 @@ class Ethereum {
   * @returns Promise with response as filtered logs
   **/
   getEventLogs(contractName, contractAddress, method, filter) {
+    this.init();
     if (!filter) {
       filter = {
         address: contractAddress
@@ -296,6 +302,7 @@ class Ethereum {
    * Calls the DeStore contract. Address taken from config.contracts.deStore
    **/
   deStore() {
+    this.init();
     const contract = this._getBuiltContract('DeStore');
     contract.setProvider(rpcConfig.provider);
     const contractInstance = contract.at(config.contracts.deStore);

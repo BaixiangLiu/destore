@@ -1,23 +1,23 @@
 const nodeRequire = require;
 const Ethereum = nodeRequire('../../libs/ethereum/ethereum.js');
-const web3 = Ethereum.init();
-const Receiver = nodeRequire('../../libs/receiver/receiver.js');
 const IPFS = nodeRequire('../../libs/ipfs/ipfs.js');
-const path = nodeRequire('path');
-const configs = nodeRequire('../../libs/config/config.js');
-const Config = nodeRequire('electron-config');
-const config = new Config();
-const fs = nodeRequire('fs');
+const Receiver = nodeRequire('../../libs/receiver/receiver.js');
+
+
 const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
+const configuration = nodeRequire('../../libs/config/config.js');
 
 const bytesMag = nodeRequire('./utils/bytesMag');
+
+const Config = nodeRequire('electron-config');
+const config = new Config();
 
 //Initializes daemon when on page
 IPFS.init();
 IPFS.daemon();
 
 //TESTING
-configs.contracts.deStore = DeStoreAddress.get();
+configuration.contracts.deStore = DeStoreAddress.get();
 
 Ethereum.changeAccount(config.get('user.accountIndex'));
 
