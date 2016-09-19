@@ -1,23 +1,23 @@
 const nodeRequire = require;
 const Ethereum = nodeRequire('../../libs/ethereum/ethereum.js');
-const web3 = Ethereum.init();
-const Receiver = nodeRequire('../../libs/receiver/receiver.js');
 const IPFS = nodeRequire('../../libs/ipfs/ipfs.js');
-const path = nodeRequire('path');
-const configs = nodeRequire('../../libs/config/config.js');
-const Config = nodeRequire('electron-config');
-const config = new Config();
-const fs = nodeRequire('fs');
+const Receiver = nodeRequire('../../libs/receiver/receiver.js');
+
+
 const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
+const configuration = nodeRequire('../../libs/config/config.js');
 
 const bytesMag = nodeRequire('./utils/bytesMag');
+
+const Config = nodeRequire('electron-config');
+const config = new Config();
 
 //Initializes daemon when on page
 IPFS.init();
 IPFS.daemon();
 
 //TESTING
-configs.contracts.deStore = DeStoreAddress.get();
+configuration.contracts.deStore = DeStoreAddress.get();
 
 Ethereum.changeAccount(config.get('user.accountIndex'));
 
@@ -94,7 +94,7 @@ var elapsed_seconds = 0;
 setInterval(function() {
   elapsed_seconds = elapsed_seconds + 1;
   $('#dash__time__timer ').text(get_elapsed_time_string(elapsed_seconds));
-}, 1000);
+}, 1000 * 60);
 
 //Checks Contract and Account Balance (every minute)
 checkBalance();
@@ -102,7 +102,7 @@ contractBalance();
 setInterval(function() {
   checkBalance();
   contractBalance();
-}, 1000);
+}, 1000 * 60);
 
 //Downloads all files available in contract (every minute)
 updateHostInfos();
@@ -112,7 +112,7 @@ setInterval(function() {
   updateHostInfos();
   hostAll();
   updateSize();
-}, 1000);
+}, 1000 * 60);
 
 $('body').on('click', '.hostAll', function() {
   hostAll();

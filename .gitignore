@@ -1,16 +1,12 @@
 node_modules
 .DS_Store
 npm-debug.log
-Downloaded/
-fileStorage/
-.fileStorage/
 data/**
+files/upload/**
 files/download/**
 files/storage/**
 files/host/**
-libs/contracts/**
 contracts-abi/**
 .node-xmlhttprequest**
 TODO
-files/
 DeStore-darwin-x64

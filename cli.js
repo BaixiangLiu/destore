@@ -1,41 +1,88 @@
 'use strict';
-
 const program = require('commander');
 const Ethereum = require('./libs/ethereum/ethereum.js');
-const IPFS = require('./libs/ipfs/ipfs.js');
-const saveContracts = require('./libs/saveContracts.js');
+// const IPFS = require('./libs/ipfs/ipfs.js');
 
 const Upload = require('./models/Upload.js');
 const Host = require('./models/Host.js');
 const DeStoreAddress = require('./models/DeStoreAddress.js');
-
 const config = require('./libs/config/config.js');
 
-const lol = console.log.bind(console);
+program
+  .version('0.0.1');
 
+/**
+* Builds a contract from contract directory specificed in config
+**/
 program
-  .version('0.0.1')
-  .option('init')
-  .option('destore', 'Deploy DeStore Contract ')
-  .option('receivers')
-  .option('reset-db')
-  .option('reset-host')
-  .option('reset-upload')
-  .option('create-account')
-  .option('unlock')
-  .option('testrpc', 'Set up testrpc env')
-  .option('receiverInfo');
-program
-  .command('save <file>')
+  .command('build <file>', 'Builds a contract from contract directory specificed in config')
   .action(function (file) {
-    console.log('save');
-    saveContracts(file);
+    Ethereum.buildContracts(file);
   });
 
-program.parse(process.argv);
-Ethereum.init();
+/**
+* Creates an Ethereum account
+**/
+program
+  .command('create-account <password>', 'Creates an Ethereum account with specified password')
+  .action(password => {
+    Ethereum.init();
+    Ethereum.createAccount(password)
+      .then(res => {
+        console.log(res);
+        process.exit();
+      })
+      .catch(err => {
+        console.error(err);
+        process.exit();
+      });
+  });
 
-if (program.init) {
+/**
+* Unlocks an Ethereum account with Ethereum.accounts index, password, and time
+**/
+program
+  .command('unlock-account <index> <password> <time>', 'Unlocks an Ethereum account with Ethereum.accounts index, password, and time')
+  .action((index, password, time) => {
+    Ethereum.init();
+    Ethereum.unlockAccount(Ethereum.accounts[index], password, time)
+      .then(bool => {
+        process.exit();
+      })
+      .catch(err => {
+        console.error(err);
+        process.exit();
+      });
+  });
+
+program
+  .option('testrpc', 'Starts up a testrpc server at port 8545');
+
+if (program.testrpc) {
+  var TestRPC = require('ethereumjs-testrpc');
+  var server = TestRPC.server();
+  server.listen(8545, function(err, blockchain) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('testrpc-server started');
+    }
+  });
+}
+
+/**
+* DeStore specific commands
+**/
+program
+  .option('destore-test', 'Sets up testing environment for DeStore')
+  .option('destore-testrpc', 'Sets up testrpc testing environment for DeStore')
+  .option('destore-deploy', 'Deploy a single DeStore contract')
+  .option('destore-receivers','Creates receivers for DeStore')
+  .option('destore-reset', 'Resets the databases for DeStore');
+
+program.parse(process.argv);
+
+if (program.destoreTest) {
   Ethereum.init();
   Upload.reset();
   Host.reset();
@@ -45,14 +92,6 @@ if (program.init) {
     gas: 3000000,
     gasValue: 20000000000
   };
-  // const promises = [];
-  // for (let i = 0; i < Ethereum.accounts.length; i++) {
-  //   promises.push(Ethereum.unlockAccount(Ethereum.accounts[i], 'hello'));
-  // }
-  // Promise.all(promises)
-  //   .then(bools => {
-  //     console.log(bools);
-
   Ethereum.unlockAccount(Ethereum.accounts[0], 'hello', 10000000)
     .then(bool => {
       return Ethereum.unlockAccount(Ethereum.accounts[1], 'hello', 10000000);
@@ -92,96 +131,7 @@ if (program.init) {
 
     });
 }
-
-if (program.destore) {
-  Ethereum.init();
-  Ethereum.changeAccount(0);
-  console.log(Ethereum.account);
-  console.log(Ethereum.getBalanceEther());
-  const deployOptions = {
-    from: Ethereum.account,
-    gas: 3000000
-  };
-  Ethereum.deploy('DeStore', [], deployOptions)
-    .then(instance => {
-      config.contracts.deStore = instance.address;
-      console.log(instance.address);
-      DeStoreAddress.save(instance.address);
-    })
-    .then(arr => {
-      console.log(arr);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-if (program.receivers) {
-  Ethereum.init();
-  config.contracts.deStore = DeStoreAddress.get();
-
-  Promise.all([
-    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[1]}),
-    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[2]}),
-    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[3]}),
-    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[4]}),
-  ])
-    .then(arr => {
-      console.log(arr);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-if (program.resetDb) {
-  Upload.reset();
-  Host.reset();
-}
-
-if (program.resetHost) {
-  Host.reset();
-}
-
-if (program.resetUpload) {
-  Upload.reset();
-}
-
-if (program.createAccount) {
-  Ethereum.createAccount('hello')
-    .then(res => {
-      console.log('created new account');
-      console.log(res);
-      process.exit();
-    })
-    .catch(err => {
-      console.error(err);
-      process.exit();
-    });
-}
-
-if (program.unlock) {
-  // for (let i = 1; i < Ethereum.accounts.length; i++) {
-  //   const web3 = Ethereum.init();
-  //   web3.eth.sendTransaction({from: Ethereum.accounts[0], to: Ethereum.accounts[i], value: Ethereum.toWei(50)});
-  //   console.log(Ethereum.getBalanceEther(i));
-  // }
-  Ethereum.init();
-  Ethereum.unlockAccount(Ethereum.accounts[0], 'hello', 10000000)
-    .then(bool => {
-      return Ethereum.unlockAccount(Ethereum.accounts[1], 'hello', 10000000);
-    })
-    .then(bool => {
-      return Ethereum.unlockAccount(Ethereum.accounts[2], 'hello', 10000000);
-    })
-    .then(bool => {
-      return Ethereum.unlockAccount(Ethereum.accounts[3], 'hello', 10000000);
-    })
-    .then(bool => {
-      return Ethereum.unlockAccount(Ethereum.accounts[4], 'hello', 10000000);
-    });
-}
-
-if (program.testrpc) {
+if (program.destoreTestrpc) {
   Ethereum.init();
   Upload.reset();
   Host.reset();
@@ -233,19 +183,46 @@ if (program.testrpc) {
       console.error(err);
     });
 }
-
-if (program.receiverInfo) {
+if (program.destoreDeploy) {
   Ethereum.init();
-  config.contracts.deStore = DeStoreAddress.get();
-  Ethereum.deStore().getReceiverIndex()
-    .then(index => {
-      console.log('Reciever Index', index);
-      return Ethereum.deStore().getReceiverList();
+  Ethereum.changeAccount(0);
+  console.log(Ethereum.account);
+  console.log(Ethereum.getBalanceEther());
+  const deployOptions = {
+    from: Ethereum.account,
+    gas: 3000000
+  };
+  Ethereum.deploy('DeStore', [], deployOptions)
+    .then(instance => {
+      config.contracts.deStore = instance.address;
+      console.log(instance.address);
+      DeStoreAddress.save(instance.address);
     })
-    .then(list => {
-      console.log('list', list);
+    .then(arr => {
+      console.log(arr);
     })
     .catch(err => {
       console.error(err);
     });
+}
+if (program.destoreReceivers) {
+  Ethereum.init();
+  config.contracts.deStore = DeStoreAddress.get();
+
+  Promise.all([
+    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[1]}),
+    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[2]}),
+    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[3]}),
+    Ethereum.deStore().receiverAdd(1000000000, {from: Ethereum.accounts[4]}),
+  ])
+    .then(arr => {
+      console.log(arr);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+if (program.destoreReset) {
+  Upload.reset();
+  Host.reset();
 }

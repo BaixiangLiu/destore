@@ -1,14 +1,13 @@
 const nodeRequire = require;
+const Ethereum = nodeRequire('../../libs/ethereum/ethereum.js');
+
+const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
 const Config = nodeRequire('electron-config');
 const config = new Config();
-const configs = nodeRequire('../../libs/config/config.js');
-const Ethereum = nodeRequire('../../libs/ethereum/ethereum.js');
-const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
-// const Sender = nodeRequire('../../libs/sender/sender.js');
-// const Receiver = nodeRequire('../../libs/receiver/receiver.js');
+const configuration = nodeRequire('../../libs/config/config.js');
 
 //TESTING
-configs.contracts.deStore = DeStoreAddress.get();
+configuration.contracts.deStore = DeStoreAddress.get();
 $(document).ready(function() {
   Ethereum.init();
   $('body').css('overflow', 'hidden');
@@ -84,7 +83,7 @@ $(document).ready(function() {
     /**
     * For Testing
     **/
-    if (configs.testing === true) {
+    if (configuration.testing === true) {
       let accountIndex;
       for (let i = 0; i < Ethereum.accounts.length; i++) {
         if (Ethereum.accounts[i] === userID) {
