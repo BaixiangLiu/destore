@@ -9,14 +9,15 @@ const Cli = new DataStore({
 
 module.exports = {
   db: Cli,
-  setBind: promisify((contractName, contractAddress, callback) => {
-    Cli.db.update({ type: 'bind' }, { contractName: contractName, contractAddress: contractAddress }, { upsert: true }, (err, numReplaced, upsert) => {
+  setContract: promisify((contractName, contractAddress, callback) => {
+    Cli.update({ contractName: contractName }, { $set: { contractName: contractName, contractAddress: contractAddress }}, { upsert: true }, (err, numReplaced, upsert) => {
       if (err) callback(err, null);
-      else callback(null, upsert);
+      else callback(null, numReplaced);
     });
   }),
-  getBind: promisify((callback) => {
-    Cli.db.findOne({ type: 'bind' }, (err, doc) => {
+  getContract: promisify((callback) => {
+    Cli.find({ }, (err, doc) => {
+      console.log(doc);
       if (err) callback(err, null);
       else callback(null, doc);
     });

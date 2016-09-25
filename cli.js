@@ -12,12 +12,27 @@ const config = require('./libs/config/config.js');
 
 program
   .version('0.0.1');
+  // .option('build <file>', 'Builds a contract from contract directory specificed in config')
+  // .option('create <password>', 'Creates an Ethereum account with specified password')
+  // .option('unlock <index> <password> <time>', 'Unlocks an Ethereum account with Ethereum.accounts index, password, and time')
+  // .option('bind <contractName> <contractAddress>', 'Binds a contract so it can be executed with the exec command')
+  // .option('exec <method> [args...]', 'Calls a specific method on a built contract');
+
+/**
+  * DeStore specific commands
+  */
+program
+  .option('destore-test', 'Sets up testing environment for DeStore')
+  .option('destore-testrpc', 'Sets up testrpc testing environment for DeStore')
+  .option('destore-deploy', 'Deploy a single DeStore contract')
+  .option('destore-receivers','Creates receivers for DeStore')
+  .option('destore-reset', 'Resets the databases for DeStore');
 
 /**
   * Builds a contract from contract directory specificed in config
   */
 program
-  .command('build <file>', 'Builds a contract from contract directory specificed in config')
+  .command('build <file>')
   .action(function (file) {
     Ethereum.buildContracts(file);
   });
@@ -26,7 +41,7 @@ program
   * Creates an Ethereum account
   */
 program
-  .command('create <password>', 'Creates an Ethereum account with specified password')
+  .command('create <password>')
   .action(password => {
     Ethereum.init();
     Ethereum.createAccount(password)
@@ -44,7 +59,7 @@ program
   * Unlocks an Ethereum account with Ethereum.accounts index, password, and time
   */
 program
-  .command('unlock <index> <password> <time>', 'Unlocks an Ethereum account with Ethereum.accounts index, password, and time')
+  .command('unlock <index> <password> <time>')
   .action((index, password, time) => {
     Ethereum.init();
     Ethereum.unlockAccount(Ethereum.accounts[index], password, time)
@@ -59,14 +74,16 @@ program
 
 
 program
-  .command('bind <contractName> <contractAddress>', 'Binds a contract so it can be executed with the exec command')
+  .command('bind <contractName> <contractAddress>')
   .action((contractName, contractAddress) => {
-    Cli.setBind(contractName, contractAddress)
-      .then(upsertDoc => {
-        process.write('Bound ' + upsertDoc.contractName + ' with address ' + upsertDoc.contractAddress);
+    console.log('bind');
+    Cli.setContract(contractName, contractAddress)
+      .then(numReplaced => {
+        if (numReplaced >= 1) console.log(true);
+        else console.log(false);
       })
       .catch(err => {
-        process.write(err);
+        console.error(err);
       });
   });
 
@@ -74,25 +91,29 @@ program
  * Calls a specific method on a built contract
  */
 program
-  .command('exec <method> [args...]', 'Calls a specific method on a built contract')
+  .command('exec <method> [args...]')
   .action((method, args) => {
     Ethereum.init();
     Cli.getBind()
       .then(doc => {
+        console.log(doc);
         const contract = Ethereum.execAt(doc.contractName, doc.contractAddress);
         args.push(Ethereum.defaults);
         return contract[method].apply(this, args);
       })
       .then(txRes => {
-        process.write(txRes);
+        console.log(txRes);
       })
       .catch(err => {
-        process.write(err);
+        console.error(err);
       });
   });
 
 program
   .option('testrpc', 'Starts up a testrpc server at port 8545');
+
+
+program.parse(process.argv);
 
 if (program.testrpc) {
   var TestRPC = require('ethereumjs-testrpc');
@@ -105,18 +126,6 @@ if (program.testrpc) {
     }
   });
 }
-
-/**
-  * DeStore specific commands
-  */
-program
-  .option('destore-test', 'Sets up testing environment for DeStore')
-  .option('destore-testrpc', 'Sets up testrpc testing environment for DeStore')
-  .option('destore-deploy', 'Deploy a single DeStore contract')
-  .option('destore-receivers','Creates receivers for DeStore')
-  .option('destore-reset', 'Resets the databases for DeStore');
-
-program.parse(process.argv);
 
 if (program.destoreTest) {
   Ethereum.init();
