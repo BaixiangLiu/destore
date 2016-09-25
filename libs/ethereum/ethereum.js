@@ -1,10 +1,11 @@
 'use strict';
-const init = require('./init.js');
-const config = require('./../config/config.js');
 const promisify = require('es6-promisify');
 const path = require('path');
 const fs = require('fs');
-const promisifiy = require('es6-promisify');
+
+const init = require('./init.js');
+const initIPC = require('./initIPC.js');
+const config = require('./../config/config.js');
 
 const createAccount = require('./createAccount');
 const unlockAccount = require('./unlockAccount');
@@ -15,8 +16,12 @@ const rpcConfig = config.rpc;
 const contractsConfig = config.contracts;
 
 class Ethereum {
+  /**
+   * Create an Ethereum object. Will need to use Ethereum.init() to connect to the Web3 RPC provider and use the Ethereun object methods
+   */
   constructor() {
     this._web3 = init();
+    this._web3IPC = null;
     this._init = false;
     this._execBind = null;
 
@@ -35,7 +40,7 @@ class Ethereum {
       data: {String}, // (optional) Either a byte string containing the associated data of the message, or in the case of a contract-creation transaction, the initialisation code.
       nonce: {Number} //  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
     }
-    **/
+    */
     this.defaults = {
       from: this.account,
       gas: 2000000,
@@ -44,9 +49,9 @@ class Ethereum {
   }
 
   /**
-   * @contractName {String} name of contract in contractConfig.build
-   * @returns {Object} built contract
-   **/
+   * @param {string} contractName Name of contract in the directory path provided in Ethereum.contract.build
+   * @returns {Contract} The built contract
+   */
   _getBuiltContract(contractName) {
     this.init();
     let contract;
@@ -59,22 +64,23 @@ class Ethereum {
   }
 
   /**
-  * Builds Solidity contracts.
-  * @ contractFiles - array - an array of contract.sol
-  * @ directoryPath - string - path where contract files are located. Optional. Will be taken from config
-  **/
+   * Builds Solidity contracts.
+   * @param {array} contractFiles Array of contract file names in the directory path provided in Ethereum.config.contracts
+   * @param {string} directoryPath Optional. Directory path where contract files are located. If none is given the directory path will be retrieved from Ethereum.config.contracts
+   */
   buildContracts(contractFiles, directoryPath) {
     return buildContracts(contractFiles, directoryPath);
   }
 
   /**
-   * initializes the RPC connection with the local Ethereum node
-   * call before every Ethereum method
-   * @returns connected web3 object
-   **/
-  init() {
+   * Initializes a RPC connection with a local Ethereum node. The RPC provider is set in Ethereum.config.rpc.port. Need to call before using the Ethereum object. If RPC connection is already initalized and valid the RPC connection will be set to the current provider.
+   * @param {string} rpcHost The host URL path to the RPC connection. Optional. If not given the rpcHost path will be taken from Ethereum.config.rpc.host.
+   * @param {number} rpcPort The port number to the RPC connection. Optional. If not given the rpcPort path will be taken from Ethereum.config.rpc.port.
+   * @returns {Web3} The Web3 object Ethereum uses set up to the RPC provider
+   */
+  init(rpcHost, rpcPort) {
     if (this._init === false) {
-      this._web3 = init();
+      this._web3 = init(rpcHost, rpcPort);
       this._init = true;
       if (this.check() === false) {
         throw ('Not connected to RPC');
@@ -89,9 +95,19 @@ class Ethereum {
   }
 
   /**
-   * checks connection to RPC
-   * @returns connection status
-   **/
+   * Initializes an IPC connection with a local Ethereum node. The IPC provider is set in Ethereum.config.ipc.host. Need to call before using the Ethereum object IPC methods.
+   * @param {string} ipcPath Path to the IPC provider. Example for Unix: process.env.HOME + '/Library/Ethereum/geth.ipc'
+   * @returns {Web3} The Web3 object Ethereum uses for its IPC connection.
+   */
+  initIPC(ipcPath) {
+    this._web3IPC = initIPC(ipcPath);
+    return this._web3IPC;
+  }
+
+  /**
+   * Checks the connection to the RPC provider
+   * @return {bool} The true or false status of the RPC connection
+   */
   check() {
     if (!this._web3) {
       return false;
@@ -101,9 +117,10 @@ class Ethereum {
   }
 
   /**
-   * @index {Number} index of the account in web3.eth.accounts to change to
-   * @returns account
-   **/
+   * Change the account address being used by the Ethereum object.
+   * @param {number} index Index of the account address returned from web3.eth.accounts to change to.
+   * @return {string} The account address now being used.
+   */
   changeAccount(index) {
     this.init();
     if (index < 0 || index >= this.accounts.length) {
@@ -116,29 +133,32 @@ class Ethereum {
   }
 
   /**
-   * NEED TO CALL PROCESS.EXIT() IN CALLBACK!
-   * @password {String}
-   * @returns {String} - id of created account
-   **/
+   * Creates a new Ethereum account. The account will be located in your geth Ethereum directory in a JSON file encrpyted with the password provided. process.exit() needs to be called in Promise or the method will run indefinately. Don't use process.exit() if using method in Electron.
+   * @param {string} password - The password to create the new account with.
+   * @return {Promise} Promise return is a string with the newly created account's address.
+   */
   createAccount(password) {
-    this.init();
-    return createAccount(password);
+    this.initIPC();
+    return createAccount(password, this._web3IPC);
   }
 
   /**
-   * @address {String}
-   * @password {String}
-   * @timeLength {Number}
-   * @returns {Boolean} - indication if the account was unlocked
-   **/
+   * Unlocks an Ethereum account. process.exit() needs to be called in Promise or the method will run indefinately. Don't use process.exit() if using method in Electron.
+   * @param {string} address - The address of the account.
+   * @param {string} password - Password of account.
+   * @param {number} timeLength - Time in seconds to have account remain unlocked for.
+   * @return {boolean} Status if account was sucessfully unlocked.
+   */
   unlockAccount(address, password, timeLength) {
-    this.init();
-    return unlockAccount(address, password, timeLength);
+    this.initIPC();
+    return unlockAccount(address, password, timeLength, this._web3IPC);
   }
 
   /**
-   * @index {Number} index of the account to check the balance of in Ether
-   **/
+   * Get the Ether balance of an account in Ether denomination.
+   * @param {number} index - Index of the account to check the balance of in Ether.
+   * @return {number} The amount of Ether contained in the account.
+   */
   getBalanceEther(index) {
     this.init();
     let amount;
@@ -153,9 +173,10 @@ class Ethereum {
   }
 
   /**
-   * 1 Ether = 1,000,000,000,000,000,000 wei
-   * @index {Number} index of the account to check the balance of in wei
-   **/
+   * Get the Ether balance of an account in Wei denomination. 1 Ether = 1,000,000,000,000,000,000 wei
+   * @param {number} index - Index of the account to check the balance of inWei.
+   * @return {number} The amount of Ether in Wei contained in the account.
+   */
   getBalanceWei(index) {
     this.init();
     let amount;
@@ -170,31 +191,32 @@ class Ethereum {
   }
 
   /**
-   * Convert Ether amount to wei
-   * @amount {Number} or {BigNumber} - amount to convert
-   * @return {Number} - wei amount
-   **/
+   * Convert an Ether amount to Wei
+   * @param {number} amount - Amount to convert. Can also be a BigNumber object.
+   * @return {number} Converted Wei amount.
+   */
   toWei(amount) {
     this.init();
     return Number(this._web3.toWei(amount, 'ether').toString());
   }
 
   /**
-   * Convert wei amount to Ether
-   * @amount {Number} or {BigNumber} - amount to convert
-   * @return {Number} - Ether amount
-   **/
+   * Convert a Wei amount to Ether.
+   * @param {number} amount - Amount to convert. Can also be a BigNumber object.
+   * @return {number} Converted Ether amount.
+   */
   toEther(amount) {
     this.init();
     return Number(this._web3.fromWei(amount, 'ether').toString());
   }
 
   /**
-   * @contractName {String} name of contract in contractConfig.build
-   * @args {Array} passed into new contract as initial parameters
-   * @options {Object} {from: address, value: {Number}, gas: {Number}, gasValue: {Number}}
-   * @returns {Object} Promise with the res as the contract instance
-   **/
+   * Deploy a built contract.
+   * @param {string} contractName - Name of built contract located in the directory provided in Ethereum.config.build.
+   * @param {Array} args - Arguments to be passed into the deployed contract as initial parameters.
+   * @param {Object} options - Transaction options. Options are: {from: contract address, value: number, gas: number, gasValue: number}.
+   * @return {Promise} The response is a Contract object of the deployed instance.
+   */
   deploy(contractName, args, options) {
     this.init();
     const contract = this._getBuiltContract(contractName);
@@ -212,29 +234,23 @@ class Ethereum {
   }
 
   /**
-   * Binds contract with its address so it can be called easily with Ethereum.exec
-   * HAVEN'T TESTED YET
-   **/
+   * Binds contract at a specific address so it can be called with Ethereum.exec().
+   */
   bindContract(contractName, contractAddress) {
     this.init();
     const contract = this._getBuiltContract(contractName);
     contract.setProvider(rpcConfig.provider);
     this._execBind = contract.at(contractAddress);
-    return true;
   }
 
   /**
-   * Pudding Contract needs to have been deployed first
-   * If bind contract was called then it
-   * @contractName {String} name of contract in contractConfig.build
-   * @returns {Object} contract instance. Calling methods on it will return a Promise
-   **/
-  // executes contract with it's deployed address
-  // returns Promise of the transaction or call
+   * Calls a deployed contract. Contract must have been deployed earlier in the process. If Ethereum.bindContract was used, method returns the bound contract.
+   * @param {string} contractName - Name of built contract located in the directory provided in Ethereum.config.build.
+   * @return {Contract} Contract object that you can call methods with.
+   */
   exec(contractName) {
     this.init();
     if (this._execBind && !contractName) return this._execBind;
-
     const contract = this._getBuiltContract(contractName);
     contract.setProvider(rpcConfig.provider);
     const contractInstance = contract.deployed();
@@ -242,10 +258,11 @@ class Ethereum {
   }
 
   /**
-   * @contractName {String} name of contract in contractConfig.build
-   * @contractAddress {String} '0x3d...' length of 42
-   * @returns {Object} contract instance. Calling methods on it will return a Promise
-   **/
+   * Calls a deployed contract at a specific address.
+   * @param {string} contractName - Name of built contract located in the directory provided in Ethereum.config.build.
+   * @param {string} contractAddress - Address of the contract.
+   * @return {Contract} Contract object that you can call methods with.
+   */
   execAt(contractName, contractAddress) {
     this.init();
     const contract = this._getBuiltContract(contractName);
@@ -257,22 +274,22 @@ class Ethereum {
   /**
    *
    * @return {Object} instance you can call watch(), get(), stopWatching()
-   **/
-  watchAt(contractName, contractAddress, method, filter) {
-    this.init();
-    const contractInstance = this.execAt(contractName, contractAddress);
-    let event = contractInstance[method];
-    event = event({}, filter);
-    return event;
-  }
+   */
+  // watchAt(contractName, contractAddress, method, filter) {
+  //   this.init();
+  //   const contractInstance = this.execAt(contractName, contractAddress);
+  //   let event = contractInstance[method];
+  //   event = event({}, filter);
+  //   return event;
+  // }
 
   /**
-  * @contractName {String} name of contract in contractConfig.build
-  * @contractAddress {String} '0x3d...' length of 42
-  * @method {String}
-  # @filter {Object}
-  * @returns Promise with response as filtered logs
-  **/
+   * @param {string} contractName - Name of built contract located in the directory provided in Ethereum.config.build.
+   * @param {string} contractAddress - Address of the contract.
+   * @param {string} method - The name of the event method.
+   * @param {Object} filter - Options to filter the events. Default: { address: contractAddress }.
+   * @return {Promise} The response contains an array event logs.
+  */
   getEventLogs(contractName, contractAddress, method, filter) {
     this.init();
     if (!filter) {
@@ -309,8 +326,9 @@ class Ethereum {
   }
 
   /**
-   * Calls the DeStore contract. Address taken from config.contracts.deStore
-   **/
+   * Calls the DeStore contract. Address taken from Ethereum.config.contracts.deStore.
+   * return {Contract}
+   */
   deStore() {
     this.init();
     const contract = this._getBuiltContract('DeStore');

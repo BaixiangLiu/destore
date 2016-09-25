@@ -1,4 +1,4 @@
-const web3_extended = require('web3_ipc');
+const Web3IPC = require('web3_ipc');
 const promisify = require('es6-promisify');
 const config = require('./../config/config.js');
 
@@ -15,9 +15,9 @@ const options = {
 * @password {String} - password for account
 * @returns {String} - promise with a response thats the account number
 **/
-module.exports = promisify((password, callback) => {
-  const web3Extended = web3_extended.create(options);
-  return web3Extended.personal.newAccount(password, (err, res) => {
+module.exports = promisify((password, web3IPC, callback) => {
+  if (!web3IPC) web3IPC = Web3IPC.create(options);
+  return web3IPC.personal.newAccount(password, (err, res) => {
     if (err) {
       callback(err, null);
     } else {

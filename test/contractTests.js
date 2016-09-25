@@ -14,8 +14,6 @@ const DeStoreAddress = require('./../models/DeStoreAddress.js');
 
 const config = require('./../libs/config/config.js');
 
-const hostFile = require('./../libs/hostDeStore.js');
-
 tape.createStream()
   .pipe(tapSpec())
   .pipe(process.stdout);
@@ -204,7 +202,7 @@ test('DeStore ===', t => {
         t.fail(err);
       });
   });
-  
+
   t.test('Check that status was changed with receiverGetStatus', t => {
     DeStore.receiverGetStatus(Ethereum.account)
       .then(acctStatus => {
@@ -319,7 +317,7 @@ test('DeStore ===', t => {
 
   t.test('Check functionality of senderAddFile by using getSenderFileHashes of the sender and IPFS addFile', t => {
     let addedHash;
-    IPFS.addFiles(config.files.upload + 'test')
+    IPFS.addFiles(__dirname + '/test')
       .then(arr => {
         const hash = arr[0].hash;
         addedHash = hash;
