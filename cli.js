@@ -5,6 +5,8 @@ const Ethereum = require('./libs/ethereum/ethereum.js');
 
 const Upload = require('./models/Upload.js');
 const Host = require('./models/Host.js');
+const Cli = require('./models/Cli.js');
+
 const DeStoreAddress = require('./models/DeStoreAddress.js');
 const config = require('./libs/config/config.js');
 
@@ -12,8 +14,8 @@ program
   .version('0.0.1');
 
 /**
-* Builds a contract from contract directory specificed in config
-**/
+  * Builds a contract from contract directory specificed in config
+  */
 program
   .command('build <file>', 'Builds a contract from contract directory specificed in config')
   .action(function (file) {
@@ -21,10 +23,10 @@ program
   });
 
 /**
-* Creates an Ethereum account
-**/
+  * Creates an Ethereum account
+  */
 program
-  .command('create-account <password>', 'Creates an Ethereum account with specified password')
+  .command('create <password>', 'Creates an Ethereum account with specified password')
   .action(password => {
     Ethereum.init();
     Ethereum.createAccount(password)
@@ -39,10 +41,10 @@ program
   });
 
 /**
-* Unlocks an Ethereum account with Ethereum.accounts index, password, and time
-**/
+  * Unlocks an Ethereum account with Ethereum.accounts index, password, and time
+  */
 program
-  .command('unlock-account <index> <password> <time>', 'Unlocks an Ethereum account with Ethereum.accounts index, password, and time')
+  .command('unlock <index> <password> <time>', 'Unlocks an Ethereum account with Ethereum.accounts index, password, and time')
   .action((index, password, time) => {
     Ethereum.init();
     Ethereum.unlockAccount(Ethereum.accounts[index], password, time)
@@ -52,6 +54,40 @@ program
       .catch(err => {
         console.error(err);
         process.exit();
+      });
+  });
+
+
+program
+  .command('bind <contractName> <contractAddress>', 'Binds a contract so it can be executed with the exec command')
+  .action((contractName, contractAddress) => {
+    Cli.setBind(contractName, contractAddress)
+      .then(upsertDoc => {
+        process.write('Bound ' + upsertDoc.contractName + ' with address ' + upsertDoc.contractAddress);
+      })
+      .catch(err => {
+        process.write(err);
+      });
+  });
+
+/**
+ * Calls a specific method on a built contract
+ */
+program
+  .command('exec <method> [args...]', 'Calls a specific method on a built contract')
+  .action((method, args) => {
+    Ethereum.init();
+    Cli.getBind()
+      .then(doc => {
+        const contract = Ethereum.execAt(doc.contractName, doc.contractAddress);
+        args.push(Ethereum.defaults);
+        return contract[method].apply(this, args);
+      })
+      .then(txRes => {
+        process.write(txRes);
+      })
+      .catch(err => {
+        process.write(err);
       });
   });
 
@@ -71,8 +107,8 @@ if (program.testrpc) {
 }
 
 /**
-* DeStore specific commands
-**/
+  * DeStore specific commands
+  */
 program
   .option('destore-test', 'Sets up testing environment for DeStore')
   .option('destore-testrpc', 'Sets up testrpc testing environment for DeStore')
