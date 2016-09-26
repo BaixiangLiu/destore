@@ -19,7 +19,7 @@ In order to use the capabilities of DeStore, we must first [install IPFS](https:
 
 # Application Overview
 
-## Sign In & Sign Up
+## Sign Up
 
 A applicant on the Desktop application can choose between signing up as a:
 
@@ -29,12 +29,13 @@ A applicant on the Desktop application can choose between signing up as a:
 
 <img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="440"/>      <img alt="Signup-host" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="430"/> 
 
+### Loading Money into Ethereum Account
+
+When the user creates a new DeStore account, a new Ethereum account is automatically created. In order to use the DeStore app, the user must have at least 1 dollar to proceed to their dashboard. To buy ether and transfer it into your DeStore account, use a third-party service such as [Coinbase](https://www.coinbase.com/places/united-states?locale=en), making a transaction to the specified Account Address. We recommend loading a minimum of 0.45 ether as a **User** and 0.1 as a **Host** before starting.
 
 <img alt="Signin-user" style="margin: 0 auto; float: left" src="./images/README/Signin-user.png" width="750"/>
 
 ## User View
-
-The user drags and drops a file from their filesystem onto the Desktop Application.
 
 <img alt="User-dragdrop" style="margin: 0 auto" src="./images/README/User-dragdrop.png" width="750"/>
 
