@@ -17,10 +17,10 @@ In order to use the capabilities of DeStore, we must first install [IPFS](https:
 
 ### Sign In & Sign Up
 
-<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-host.png" width="450"/> <img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="450"/> 
+<img alt="Signup-user" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="450"/> <img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="450"/> 
 
 
-<img alt="Signin-user" style="margin: 0 auto" src="./images/README/Signin-user.png" width="750"/>
+<img alt="Signin-user" style="margin: 0 auto; float: left" src="./images/README/Signin-user.png" width="750"/>
 
 ### User View
 
