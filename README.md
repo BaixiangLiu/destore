@@ -3,7 +3,8 @@
 # Purpose
 DeStore aims to create a decentralized peer-to-peer file storage platform with a trustless crytocurrency payment system. It is built on top of [Ethereum](https://www.ethereum.org/) to provide the platform with a decentralized logic base and dencentralized global state. It processes transactions using cryptocurrency called [Ether](https://www.ethereum.org/ether) It is also built using [IPFS](https://ipfs.io/) to provide the platform with content addressable peer-to-peer file distribution. 
 
-While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/DeLib). DeLib contains:
+While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/DeLib). 
+DeLib contains:
 	- A light-weight Command Line Interface that allows creation of IPC and RPC connections
 	- Ethereum smart contract compile, build, and deployment functionality
 	- Promise-based architecture to abstract away the asynchronicity present while using Ethereum
