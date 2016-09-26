@@ -1,15 +1,15 @@
 <img alt="logo" style="margin: 0 auto; float: left" src="./images/DestoreLogo.png" width="400"/>
 
-## Purpose
+# Purpose
 DeStore aims to create a decentralized peer-to-peer file storage platform with a trustless crytocurrency payment system. It is built on top of [Ethereum](https://www.ethereum.org/) to provide the platform with a decentralized logic base and dencentralized global state. It processes transactions using cryptocurrency called [Ether](https://www.ethereum.org/ether) It is also built using [IPFS](https://ipfs.io/) to provide the platform with content addressable peer-to-peer file distribution. 
 
 
-## Setup
+# Setup
 
-### Dependency Installation
+## Dependency Installation
 In order to use the capabilities of DeStore, we must first [install IPFS](https://ipfs.io/docs/install) and [install geth](https://www.ethereum.org/cli#geth). Please follow the links to complete each respective download before starting the app.
 
-### Package Installation
+## Package Installation
 
 `npm install` to install all npm dependencies.
 
@@ -17,7 +17,7 @@ In order to use the capabilities of DeStore, we must first [install IPFS](https:
 
 ## Application Overview
 
-### Sign In & Sign Up
+## Sign In & Sign Up
 
 A applicant on the Desktop application can choose between signing up as a:
 
@@ -30,7 +30,7 @@ A applicant on the Desktop application can choose between signing up as a:
 
 <img alt="Signin-user" style="margin: 0 auto; float: left" src="./images/README/Signin-user.png" width="750"/>
 
-### User View
+## User View
 
 The user drags and drops a file from their filesystem onto the Desktop Application.
 
@@ -46,7 +46,7 @@ The user drags and drops a file from their filesystem onto the Desktop Applicati
 
 <img alt="User-retrieve" style="margin: 0 auto" src="./images/README/User-retrieve.png" width="750"/>
 
-### Host View
+## Host View
 
 <img alt="Host-after" style="margin: 0 auto" src="./images/README/Host-after.png" width="750"/>
 
