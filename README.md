@@ -15,7 +15,9 @@ In order to use the capabilities of DeStore, we must first [install IPFS](https:
 
 `npm start` to initialize the electron application.
 
-## Application Overview
+
+
+# Application Overview
 
 ## Sign In & Sign Up
 
@@ -25,7 +27,7 @@ A applicant on the Desktop application can choose between signing up as a:
 - **Host** (saves other users' files to their hard drive for money in return)
 	
 
-<img alt="Signup-user" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="430"/> <img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="440"/> 
+<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="440"/>      <img alt="Signup-host" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="430"/> 
 
 
 <img alt="Signin-user" style="margin: 0 auto; float: left" src="./images/README/Signin-user.png" width="750"/>
