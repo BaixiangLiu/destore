@@ -18,6 +18,6 @@ module.exports = (contractFiles, directoryPath) => {
     })
     .catch((err) => {
       console.log('Pudding Save Error');
-      console.log(err);
+      console.error(err);
     });
 };

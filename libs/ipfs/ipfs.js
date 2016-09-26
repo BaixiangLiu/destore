@@ -14,12 +14,22 @@ class IPFS {
     this.id = null;
   }
 
-  // need to run before using IPFSObj
-  init() {
-    this._ipfs = new ipfsAPI(networkConfig.host,
-      networkConfig.port, {
-        protocol: networkConfig.protocol
+  /**
+   * Initalize the connection to an IPFS node. If no network configuration is given the configuration will be taken from IPFS.config.
+   * @return {IPFS} IPFS object
+   */
+  init(manualConfig) {
+    if (manualConfig) {
+      this._ipfs = new ipfsAPI(manualConfig.host, manualConfig.port, {
+        protocol: manualConfig.protocol
       });
+    } else {
+      this._ipfs = new ipfsAPI(networkConfig.host,
+        networkConfig.port, {
+          protocol: networkConfig.protocol
+        });
+    }
+
     // a check to see if it connected to IPFS
     this._ipfs.id()
       .then((res) => {
@@ -33,7 +43,7 @@ class IPFS {
     return this._ipfs;
   }
 
-  // call ipfs daemon --manage-fdlimit
+  /** Open an IPFS daemon is a child process */
   daemon() {
     const ipfsDaemon = spawn('ipfs', ['daemon', '--manage-fdlimit']);
 
@@ -55,9 +65,10 @@ class IPFS {
   }
 
   /**
-  * @filesPaths {String} or {Array} contains path to files
-  * @return {Promise} with res an array of objects with {path: String, hash: String, size: Number, file: file path}
-  **/
+   * Add a single file or multiple files to the connected IPFS node.
+   * @param {string} filePaths - Path to file. Can also be an array of paths.
+   * @return {Promise} Response of Promise is an array of objects with {path: string, hash: string, size: number, file: filePath}
+   */
   addFiles(filePaths) {
     if (typeof filePaths === 'string') {
       filePaths = [filePaths];
@@ -82,10 +93,11 @@ class IPFS {
   }
 
   /**
-  * @hashAddress - {String} - of the file
-  * @writePath - {String} - path in which to write the file to
-  * @returns {Promise} with the response as an array of all buffer chunks
-  **/
+   * Retrieve a file based on his hash address from the IPFS network.
+   * @param {string} hashAddress - Hashaddress of the file.
+   * @param {string} writePath - Path in which to write the file to.
+   * @return {Promise} Response of Promise is an array of all file buffer chunks.
+   */
   download(hashAddress, writePath) {
     try {
       fs.accessSync(writePath);
@@ -123,10 +135,10 @@ class IPFS {
   }
 
   /**
-  * Takes a hash address and retrieves the Merkle Dag links
-  * @hashAddress {String}
-  * @returns {Promise} - returns an array of Objects of DAGLink info. {name: String, hashAddress: String, size: Number, hash: Buffer of hash address}
-  **/
+   * Take a hash address corresponding to a particular file and retrieve the Merkle Dag links of that file.
+   * @param {string} hashAddress - Hash address of the file.
+   * @return {Promise} Response of Promise is an array of Objects with DAGLink info. {name: String, hashAddress: String, size: Number, hash: Buffer of hash address}
+   */
   links(hashAddress) {
     return promisify((hashAddress, callback) => {
       this._ipfs.object.links(hashAddress)
@@ -144,19 +156,19 @@ class IPFS {
   }
 
   /**
-  * Pins a hash to the IPFS node so that it won't come off
-  * @hashAddress {String}
-  * @returns Promise - hashes pinned
-  **/
+   * Pin a hash address to the connected to IPFS node.
+   * @param {string} hashAddress - Hash address of the file.
+   * @return {Promise} Response of Promise is an array of the hash addresses of the pinned files.
+   */
   pin(hashAddress) {
     return this._ipfs.pin.add(hashAddress);
   }
 
   /**
-  * Unpins a hash from the IPFS node
-  * @hashAddress {String}
-  * @returns Promise - hashes unpinned
-  **/
+   * Unpin a hash address to the connected to IPFS node.
+   * @param {string} hashAddress - Hash address of the file.
+   * @return {Promise} Response of Promise is an array of the hash addresses of the unpinned files.
+   */
   unpin(hashAddress) {
     return this._ipfs.pin.rm(hashAddress);
   }

@@ -28,19 +28,6 @@ class Ethereum {
     this.account = null;
     this.accounts = [];
 
-    // default options for destore methods
-    /**
-    const options = {
-      from: {String}, // The address for the sending account. Uses the web3.eth.defaultAccount property, if not specified.
-      to: {String}, // (optional) The destination address of the message, left undefined for a contract-creation transaction.
-      value: {Number|String|BigNumber}, // (optional) The value transferred for the transaction in Wei, also the endowment if it's a contract-creation transaction
-      gas: {Number|String|BigNumber}, // optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-
-      gasPrice: {Number|String|BigNumber}, // (optional, default: To-Be-Determined) The price of gas for this transaction in wei, defaults to the mean network gas price.
-      data: {String}, // (optional) Either a byte string containing the associated data of the message, or in the case of a contract-creation transaction, the initialisation code.
-      nonce: {Number} //  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-    }
-    */
     this.defaults = {
       from: this.account,
       value: 0,
@@ -58,7 +45,7 @@ class Ethereum {
     try {
       contract = require(contractsConfig.built + contractName + '.sol.js');
     } catch (e) {
-      throw ('Invalid contract in deploy');
+      throw new Error('Invalid built contract');
     }
     return contract;
   }
@@ -83,7 +70,7 @@ class Ethereum {
       this._web3 = init(rpcHost, rpcPort);
       this._init = true;
       if (this.check() === false) {
-        throw ('Not connected to RPC');
+        throw new Error('Not connected to RPC');
       } else {
         this.accounts = this._web3.eth.accounts;
         // rebinding this doesn't work
