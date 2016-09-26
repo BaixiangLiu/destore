@@ -16,22 +16,24 @@ In order to use the capabilities of DeStore, we must first install [IPFS](https:
 ## Application Overview
 
 ### Sign In & Sign Up
-<img alt="Signup-user" style="text-align: center" src="./images/README/Signup-user.png" width="800"/>
 
-![Signup-host](./images/README/Signup-host.png =800x)
+<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="750"/>
 
-![Signin-user](./images/README/Signin-user.png)
+<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-host.png" width="750"/>
 
-### Sign In & Sign Up
+<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signin-user.png" width="750"/>
 
-![User-dragdrop](./images/README/User-dragdrop.png)
+### User View
 
-![User-mount](./images/README/User-mount.png)
+<img alt="User-dragdrop" style="margin: 0 auto" src="./images/README/User-dragdrop.png" width="750"/>
 
-![User-distribute](./images/README/User-distribute.png)
+<img alt="User-mount" style="margin: 0 auto" src="./images/README/User-mount.png" width="750"/>
 
-![User-retrieve](./images/README/User-retrieve.png)
+<img alt="User-distribute" style="margin: 0 auto" src="./images/README/User-distribute.png" width="750"/>
 
-### Sign In & Sign Up
+<img alt="User-retrieve" style="margin: 0 auto" src="./images/README/User-retrieve.png" width="750"/>
 
-![Host-after](./images/README/Host-after.png)
+### Host View
+
+<img alt="Host-after" style="margin: 0 auto" src="./images/README/Host-after.png" width="750"/>
+
