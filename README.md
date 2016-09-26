@@ -5,7 +5,7 @@ DeStore aims to create a decentralized peer-to-peer file storage platform with a
 
 ### DeLib
 
-While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/DeLib), a light-weight, but inclusive Ethereum library: 
+While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/DeLib), a light-weight, fully-inclusive Ethereum library: 
 - A Command Line Interface that allows creation of IPC and RPC connections
 - Ethereum smart contract compile, build, and deployment functionality
 - Promise-based architecture to abstract away the asynchronicity present while using Ethereum
