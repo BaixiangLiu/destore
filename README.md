@@ -21,8 +21,9 @@ In order to use the capabilities of DeStore, we must first [install IPFS](https:
 
 A applicant on the Desktop application can choose between signing up as a:
 
-**User** (can pay to store to the distributed database made of real-world hosts)
-**Host** (saves other users' files to their hard drive for money in return)
+	- **User** (can pay to store to the distributed database made of real-world hosts)
+
+	- **Host** (saves other users' files to their hard drive for money in return)
 	
 
 <img alt="Signup-user" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="430"/> <img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="440"/> 
