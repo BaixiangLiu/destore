@@ -10,3 +10,6 @@ contracts-abi/**
 .node-xmlhttprequest**
 TODO
 DeStore-darwin-x64
+
+fileStorage
+.fileStorage
