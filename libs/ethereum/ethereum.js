@@ -43,8 +43,8 @@ class Ethereum {
     */
     this.defaults = {
       from: this.account,
-      gas: 2000000,
       value: 0,
+      gas: 3000000
     };
   }
 
@@ -266,6 +266,7 @@ class Ethereum {
   execAt(contractName, contractAddress) {
     this.init();
     const contract = this._getBuiltContract(contractName);
+    contract.defaults(this.defaults);
     contract.setProvider(rpcConfig.provider);
     const contractInstance = contract.at(contractAddress);
     return contractInstance;

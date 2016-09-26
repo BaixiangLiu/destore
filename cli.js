@@ -33,13 +33,93 @@ program
   */
 program
   .command('build <file>')
-  .action(function (file) {
+  .action((file) => {
     Ethereum.buildContracts(file);
   });
 
-/**
-  * Creates an Ethereum account
-  */
+program
+  .command('options <fromIndex> <value> <gas> [extra...]')
+  .action((fromIndex, value, gas, extra) => {
+    Ethereum.init();
+    const fromAccount = Ethereum.accounts[fromIndex];
+    let gasValue = null;
+    if (extra[0]) gasValue = extra[0];
+
+    Cli.setOptions(fromAccount, value, gas, gasValue)
+      .then(status => {
+        console.log(status);
+        return Cli.getOptions();
+      })
+      .then(options => {
+        console.log(options);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+
+program
+  .command('deploy <contractName> [args...]')
+  .action((contractName, args) => {
+    Ethereum.init();
+    Cli.getOptions()
+      .then(options => {
+        Ethereum.defaults = options;
+        return Ethereum.deploy(contractName, args);
+      })
+      .then(instance => {
+        console.log(instance.address);
+        return Cli.setContract(contractName, instance.address);
+      })
+      .then(status => {
+        console.log(status);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+
+program
+  .command('set <contractName> <contractAddress>')
+  .action((contractName, contractAddress) => {
+    console.log('bind');
+    Cli.setContract(contractName, contractAddress)
+      .then(status => {
+        console.log(status);
+        return Cli.getContract(contractName);
+      })
+      .then(contractInfo => {
+        console.log(contractInfo);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+
+program
+  .command('exec <contractName> <method> [args...]')
+  .action((contractName, method, args) => {
+    Ethereum.init();
+    Cli.getOptions()
+      .then(options => {
+        Ethereum.default = options;
+        return Cli.getContract(contractName);
+      })
+      .then(doc => {
+        const contract = Ethereum.execAt(doc.contractName, doc.contractAddress);
+        args.push(Ethereum.defaults);
+        return contract[method].apply(this, args);
+      })
+      .then(txRes => {
+        console.log(txRes);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+
+
+
 program
   .command('create <password>')
   .action(password => {
@@ -72,46 +152,23 @@ program
       });
   });
 
-
 program
-  .command('bind <contractName> <contractAddress>')
-  .action((contractName, contractAddress) => {
-    console.log('bind');
-    Cli.setContract(contractName, contractAddress)
-      .then(numReplaced => {
-        if (numReplaced >= 1) console.log(true);
-        else console.log(false);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  });
-
-/**
- * Calls a specific method on a built contract
- */
-program
-  .command('exec <method> [args...]')
-  .action((method, args) => {
+  .command('balance <index>')
+  .action((index) => {
     Ethereum.init();
-    Cli.getBind()
-      .then(doc => {
-        console.log(doc);
-        const contract = Ethereum.execAt(doc.contractName, doc.contractAddress);
-        args.push(Ethereum.defaults);
-        return contract[method].apply(this, args);
-      })
-      .then(txRes => {
-        console.log(txRes);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    const balance = Ethereum.getBalanceEther(index);
+    console.log(balance);
   });
+
+// program
+//   .command('logs <contractName> <event>')
+//   .action((contractName, event) => {
+//     Ethereum.init();
+//     return Ethereum.getEventLogs
+//   })
 
 program
   .option('testrpc', 'Starts up a testrpc server at port 8545');
-
 
 program.parse(process.argv);
 
