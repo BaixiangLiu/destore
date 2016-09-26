@@ -1,4 +1,4 @@
-![logo](./images/DestoreLogo.png =200x) 
+<img alt="logo" style="margin: 0 auto; float: left" src="./images/DestoreLogo.png" width="200"/>
 
 ## Purpose
 DeStore aims to create a decentralized peer-to-peer file storage platform with a trustless crytocurrency payment system. It is built on top of Ethereum to provide the platform with a decentralized logic base and dencentralized global state. It processes transactions using cryptocurrency called [Ether](https://www.ethereum.org/ether) It is also built using IPFS to provide the platform with content addressable peer-to-peer file distribution. 
@@ -21,7 +21,6 @@ In order to use the capabilities of DeStore, we must first install [IPFS](https:
 
 A applicant on the Desktop application can choose between signing up as a:
 	User (can pay to store to the distributed database made of real-world hosts)
-OR A
 	Host (saves other users' files to their hard drive for money in return)
 	
 
