@@ -3,12 +3,11 @@ const ipfsAPI = require('ipfs-api');
 const fs = require('fs');
 const promisify = require('es6-promisify');
 const spawn = require('child_process').spawn;
-const networkConfig = require('./../config/config.js').network;
+const ipfsNetwork = require('./../config/config.js').ipfsNetwork;
 const multihashes = require('multihashes');
 
 class IPFS {
   constructor() {
-    this._ipfs = this.init();
     this.connect = false;
     this.publicKey = null;
     this.id = null;
@@ -16,6 +15,7 @@ class IPFS {
 
   /**
    * Initalize the connection to an IPFS node. If no network configuration is given the configuration will be taken from IPFS.config.
+   * @param {Object} manualConfig - Object containing the configuration parameters for IPFS. Default: { host: 'localhost', port: 5001, protocol: 'http' }
    * @return {IPFS} IPFS object
    */
   init(manualConfig) {
@@ -24,9 +24,11 @@ class IPFS {
         protocol: manualConfig.protocol
       });
     } else {
-      this._ipfs = new ipfsAPI(networkConfig.host,
-        networkConfig.port, {
-          protocol: networkConfig.protocol
+      console.log('manual config');
+
+      this._ipfs = new ipfsAPI(ipfsNetwork.host,
+        ipfsNetwork.port, {
+          protocol: ipfsNetwork.protocol
         });
     }
 

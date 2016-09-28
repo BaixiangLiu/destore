@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "electron ./app/main.js",
-    "test": "node ./test/contractTests.js",
+    "test": "node ./test/appTests.js",
     "package": "asar pack DeStore.app/Contents/app DeStore.app/Contents/Resources/app.asar",
     "build": "electron-packager ./ DeStore --prune --overwrite && cp electron.icns DeStore-darwin-x64/DeStore.app/Contents/Resources/electron.icns"
   },

@@ -12,7 +12,6 @@
 **/
 const contractsConfig = {
   path: __dirname + '/../../contracts/',
-  testPath: __dirname + '/../../contracts-test/',
   type: 'Solidity',
   built: __dirname + '/../contracts/',
   abiPath: __dirname + '/../../contracts-abi/',

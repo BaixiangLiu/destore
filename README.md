@@ -1,11 +1,11 @@
 <img alt="logo" style="margin: 0 auto; float: left" src="./images/DestoreLogo.png" width="400"/>
 
 # Purpose
-DeStore aims to create a decentralized peer-to-peer file storage platform with a trustless crytocurrency payment system. It is built on top of [Ethereum](https://www.ethereum.org/) to provide the platform with a decentralized logic base and dencentralized global state. It processes transactions using cryptocurrency called [Ether](https://www.ethereum.org/ether) It is also built using [IPFS](https://ipfs.io/) to provide the platform with content addressable peer-to-peer file distribution. 
+DeStore aims to create a decentralized peer-to-peer file storage platform with a trustless crytocurrency payment system. It is built on top of [Ethereum](https://www.ethereum.org/) to provide the platform with a decentralized logic base and dencentralized global state. It processes transactions using cryptocurrency called [Ether](https://www.ethereum.org/ether) It is also built using [IPFS](https://ipfs.io/) to provide the platform with content addressable peer-to-peer file distribution.
 
 ### DeLib
 
-While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/DeLib), a light-weight, and fully-inclusive Ethereum library: 
+While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://github.com/DeStore/delib), a light-weight, and fully-inclusive Ethereum library:
 - A Command Line Interface that allows creation of IPC and RPC connections
 - Ethereum smart contract compile, build, and deployment functionality
 - Promise-based architecture to abstract away the asynchronicity present while using Ethereum
@@ -34,9 +34,9 @@ A applicant on the Desktop application can choose between signing up as a:
 
 - **User** (can pay to store to the distributed database made of real-world hosts)
 - **Host** (saves other users' files to their hard drive for money in return)
-	
 
-<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="440"/>      <img alt="Signup-host" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="430"/> 
+
+<img alt="Signup-user" style="margin: 0 auto" src="./images/README/Signup-user.png" width="440"/>      <img alt="Signup-host" style="margin: 0 auto; float: left" src="./images/README/Signup-host.png" width="430"/>
 
 
 

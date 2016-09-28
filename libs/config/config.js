@@ -1,13 +1,13 @@
 const contractsConfig = require('./contracts.js');
 const rpcConfig = require('./rpc.js');
-const networkConfig = require('./network.js');
+const ipfsNetwork = require('./ipfsNetwork.js');
 const filesConfig = require('./files.js');
 const ipcConfig = require('./ipc.js');
 
 module.exports = {
   contracts: contractsConfig,
   rpc: rpcConfig,
-  network: networkConfig,
+  ipfsNetwork: ipfsNetwork,
   files: filesConfig,
   ipc: ipcConfig,
   testing: true

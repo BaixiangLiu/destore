@@ -13,7 +13,7 @@ const path = require('path');
 module.exports = promisify((callback) => {
   Host.db.find({account: Ethereum.account, isHosted: false}, (err, docs) => {
     if (err || docs.length === 0) {
-      // this error was bad
+      // this error was bad. it doesnt need to here
       // callback(new Error('Could not find a doc with isHosted of false'), null);
       return;
     }

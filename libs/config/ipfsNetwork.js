@@ -2,10 +2,10 @@
 
 // ipfs config options
 
-const networkConfig = {
+const ipfsNetwork = {
   host: 'localhost',
   port: 5001,
   protocol: 'http'
 };
 
-module.exports = networkConfig;
+module.exports = ipfsNetwork;

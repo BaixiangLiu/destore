@@ -23,6 +23,7 @@ const test = tapes(tape);
 const lol = console.log.bind(console);
 
 const web3 = Ethereum.init();
+IPFS.init();
 
 const helper = {
   fromBytes: (byteArray) => {
