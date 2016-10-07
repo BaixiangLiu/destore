@@ -10,5 +10,5 @@ module.exports = {
   ipfsNetwork: ipfsNetwork,
   files: filesConfig,
   ipc: ipcConfig,
-  testing: true
+  testing: false
 };

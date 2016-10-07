@@ -11,7 +11,6 @@ const DeStoreAddress = require('./../models/DeStoreAddress.js');
 
 const config = require('./../libs/config/config.js');
 
-
 tape.createStream()
   .pipe(tapSpec())
   .pipe(process.stdout);
@@ -22,6 +21,8 @@ const lol = console.log.bind(console);
 
 const Upload = require('./../models/Upload.js');
 const Host = require('./../models/Host.js');
+const Sender = require('./../app/javascripts/sender/sender.js');
+const Receiver = require('./../app/javascripts/receiver/receiver.js');
 
 const web3 = Ethereum.init();
 IPFS.init();
@@ -52,10 +53,10 @@ test('Deploying new DeStore contract and adding a sender and receiver', t => {
     });
 });
 
-const mountFile = require('./../libs/sender/mountFile.js');
-
 test('Testing mountFile', t => {
-  mountFile(__dirname + '/lemon.gif', 0.002)
+  const fileValue = 1;
+  const fileValueMB = fileValue / 1024 / 1024;
+  Sender.mountFile(__dirname + '/lemon.gif', fileValueMB)
     .then(res => {
       t.equal(res.hashAddress, 'QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW', 'Expect hash uploaded to equal');
       t.end();
@@ -66,9 +67,8 @@ test('Testing mountFile', t => {
     });
 });
 
-const chunkFile = require('./../libs/sender/chunkFile.js');
 test('Testing chunkFile', t => {
-  chunkFile('lemon.gif')
+  Sender.chunkFile('lemon.gif')
     .then(links => {
       t.end();
     })
@@ -78,10 +78,9 @@ test('Testing chunkFile', t => {
     });
 });
 
-const uploadDeStore = require('./../libs/sender/uploadDeStore.js');
 
 test('Testing uploadDeStore success', t => {
-  uploadDeStore('lemon.gif')
+  Sender.uploadDeStore('lemon.gif')
     .then(res => {
       t.equal(res[0], 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS', 'Expect has uploaded to equal first link address of sender file');
       t.end();
@@ -93,7 +92,7 @@ test('Testing uploadDeStore success', t => {
 });
 
 test('Testing uploadDeStore fail with invalid file name', t => {
-  uploadDeStore('does not exist')
+  Sender.uploadDeStore('does not exist')
     .then(res => {
       t.fail();
     })
@@ -103,10 +102,8 @@ test('Testing uploadDeStore fail with invalid file name', t => {
     });
 });
 
-const distribute = require('./../libs/sender/distribute');
-
 test('Testing distribute' , t => {
-  distribute('lemon.gif', 1)
+  Sender.distribute('lemon.gif', 1)
     .then(addresses => {
       t.equal(addresses[0], Ethereum.accounts[1], 'Expect address returned to equal to Ethereum.accounts[1]');
       t.end();
@@ -117,11 +114,9 @@ test('Testing distribute' , t => {
     });
 });
 
-const hostInfo = require('./../libs/receiver/hostInfo.js');
-
 test('Testing hostInfo', t => {
   Ethereum.changeAccount(1);
-  hostInfo()
+  Receiver.hostInfo()
     .then(infos => {
       console.log(infos[0]);
       t.equal(infos[0].hashAddress, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS', 'Expect hashAddress of 1st link to equal 1st link of added file');
@@ -137,18 +132,19 @@ test('Testing hostInfo', t => {
 test('Testing hostInfo for duplicates', t => {
   Ethereum.changeAccount(0);
   let mountedHash;
-  mountFile(__dirname + '/kb.png', 1)
+  const fileValue = 1;
+  const fileValueMB = fileValue / 1024 / 1024;
+  Sender.mountFile(__dirname + '/kb.png', fileValueMB)
     .then(doc => {
       mountedHash = doc.hashAddress;
-      return uploadDeStore('kb.png');
+      return Sender.uploadDeStore('kb.png');
     })
     .then(hashes => {
-      return distribute('kb.png', 1);
+      return Sender.distribute('kb.png', 1);
     })
     .then(receivers => {
-
       Ethereum.changeAccount(1);
-      return hostInfo();
+      return Receiver.hostInfo();
     })
     .then(docs => {
       t.equal(docs.length, 1, 'Except length of docs returned to equal 1');
@@ -161,10 +157,9 @@ test('Testing hostInfo for duplicates', t => {
     });
 });
 
-const hostAll = require('./../libs/receiver/hostAll');
 test('Testing hostAll to see if it hosts all files', t => {
   Ethereum.changeAccount(1);
-  hostAll()
+  Receiver.hostAll()
     .then(docs => {
       t.equal(docs.length, 6, 'Except length of docs returned to equal 6');
       t.end();
@@ -175,34 +170,18 @@ test('Testing hostAll to see if it hosts all files', t => {
     });
 });
 
-/* This test doesn't need to work anymore
-test('Testing hostAll to see if it skips files already hosted', t => {
-  Ethereum.changeAccount(1);
-  hostAll()
-    .then(docs => {
-      // t.fail();
-      t.end();
-    })
-    .catch(err => {
-      t.ok('ok', 'Expected to catch an error');
-      t.end();
-    });
-});
-*/
-
-const payFile = require('./../libs/sender/payFile');
 test('Testing payFile', t => {
   Ethereum.changeAccount(0);
   const originalBalance = Ethereum.getBalanceEther();
-  payFile('lemon.gif')
+  Sender.payFile('lemon.gif')
     .then(balance => {
-      t.equal(balance, originalBalance - 5, 'Expect balance to equal original minus 5');
+      t.equal(Math.round(balance), 73, 'Expect balance to equal 73');
       Ethereum.changeAccount(1);
       return Ethereum.deStore().receiverGetBalance({from: Ethereum.account});
     })
     .then(amount => {
       const added = Ethereum.toEther(amount);
-      t.equal(added, 5, 'Except added to equal 5');
+      t.equal(Math.round(added), 27, 'Except added to equal 27');
       t.end();
     })
     .catch(err => {
@@ -211,29 +190,25 @@ test('Testing payFile', t => {
     });
 });
 
-const withdrawAll = require('./../libs/receiver/withdrawAll');
 test('Testing withdrawAll', t => {
   Ethereum.changeAccount(1);
-  withdrawAll()
+  Receiver.withdrawAll()
     .then(amount => {
-      t.equal(Ethereum.toEther(amount), 5, 'Except withdraw amount to equal 5');
+      t.equal(Math.round(Ethereum.toEther(amount)), 27, 'Except withdraw amount to equal 27');
       t.end();
     })
     .catch(err => {
       console.error(err);
       t.fail();
     });
-
 });
 
-const removeHash = require('./../libs/receiver/removeHash');
-const listHashes = require('./../libs/receiver/listHostDb');
 test('Testing removeHash and listHostDb', t => {
   Ethereum.changeAccount(1);
-  removeHash('QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS')
+  Receiver.removeHash('QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS')
     .then(returnPath => {
       t.equal(returnPath, path.join(config.files.host, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS'), 'Expect path of file removed to equal the location of the file');
-      return listHashes();
+      return Receiver.listHostDb();
     })
     .then(docs => {
       t.equal(docs.length, 6, 'Expect length of docs retrieved to db to equal 6');
@@ -245,10 +220,9 @@ test('Testing removeHash and listHostDb', t => {
     });
 });
 
-const retrieveFile = require('./../libs/sender/retrieveFile');
 test('Testing retrieveFile', t => {
   Ethereum.changeAccount(0);
-  retrieveFile('lemon.gif')
+  Sender.retrieveFile('lemon.gif')
     .then(returnedPath => {
       t.equal(returnedPath, path.join(config.files.download, 'lemon.gif'), 'Expect retrieved path to equal config files download location and file name');
       lol(returnedPath);

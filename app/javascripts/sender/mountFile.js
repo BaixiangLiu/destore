@@ -1,7 +1,7 @@
 'use strict';
-const Ethereum = require('./../ethereum/ethereum.js');
-const IPFS = require('./../ipfs/ipfs.js');
-const Upload = require('./../../models/Upload.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const IPFS = require('./../../../libs/ipfs/ipfs.js');
+const Upload = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
 const fs = require('fs');
 const path = require('path');

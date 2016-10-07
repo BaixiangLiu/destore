@@ -1,6 +1,6 @@
 'use strict';
-const Ethereum = require('./../ethereum/ethereum.js');
-const Host = require('./../../models/Host.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const Host = require('./../../../models/Host.js');
 const promisfy = require('es6-promisify');
 
 /**

@@ -3,12 +3,13 @@ const path = nodeRequire('path');
 
 const Ethereum = nodeRequire('../../libs/ethereum/ethereum.js');
 const IPFS = nodeRequire('../../libs/ipfs/ipfs.js');
-const Sender = nodeRequire('../../libs/sender/sender.js');
 const bytesMag = nodeRequire('./utils/bytesMag');
 const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
 const configuration = nodeRequire('../../libs/config/config.js');
 const Config = nodeRequire('electron-config');
 const config = new Config();
+
+const Sender = nodeRequire('./sender/sender.js');
 
 //Initializes daemon when on page
 IPFS.init();
@@ -182,7 +183,10 @@ $('body').on('click', '.retrieve', function() {
       return Sender.decrypt(writePath, 'hello');
     })
     .then(writePath => {
-      console.log(writePath);
+      // console.log(writePath);
+    })
+    .catch(err => {
+      console.error(err);
     });
 });
 

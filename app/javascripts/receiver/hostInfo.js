@@ -1,9 +1,9 @@
 'use strict';
-const IPFS = require('./../ipfs/ipfs.js');
-const Ethereum = require('./../ethereum/ethereum.js');
-const Host = require('./../../models/Host.js');
+const IPFS = require('./../../../libs/ipfs/ipfs.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const Host = require('./../../../models/Host.js');
 const promisfy = require('es6-promisify');
-const nestedHexToAscii = require('./../ethereum/nestedHexToAscii');
+const nestedHexToAscii = require('./../../../libs/ethereum/nestedHexToAscii');
 
 /**
 * Gets hash addresses from reciever contract and saves file info into Host db

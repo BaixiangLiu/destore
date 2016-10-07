@@ -1,6 +1,6 @@
 'use strict';
-const Ethereum = require('./../ethereum/ethereum.js');
-const Upload = require('./../../models/Upload.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const Upload = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
 
 /**
@@ -17,9 +17,13 @@ module.exports = promisify((fileName, callback) => {
       return;
     }
     const receiverCount = doc.receivers.length;
+    console.log(receiverCount);
     let value = doc.value;
     const size = doc.fileSize;
     value = value * size * receiverCount;
+    console.log(value);
+
+    console.log(Ethereum.getBalanceEther());
     if (Ethereum.getBalanceEther() < value) {
       callback(new Error('Not enough funds'), null);
       return;

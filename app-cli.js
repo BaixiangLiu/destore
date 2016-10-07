@@ -71,7 +71,6 @@ if (program.test) {
     .catch(err => {
       console.error(err);
       process.exit();
-
     });
 }
 

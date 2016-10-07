@@ -13,7 +13,7 @@
 const contractsConfig = {
   path: __dirname + '/../../contracts/',
   type: 'Solidity',
-  built: __dirname + '/../contracts/',
+  built: __dirname + '/../../app/contracts/',
   abiPath: __dirname + '/../../contracts-abi/',
   abiFormat: '.json',
   deStore: '0x65230dbaa5c0ecd096c12e2686598d00aadaf920'

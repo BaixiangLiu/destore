@@ -4,7 +4,7 @@ const zlib = require('zlib');
 const fs = require('fs');
 const crypto = require('crypto');
 const promisify = require('es6-promisify');
-const config = require('./../config/config.js');
+const config = require('./../../../libs/config/config.js');
 
 module.exports = promisify((filePath, password, callback) => {
   const writePath = config.files.decrypt + path.basename(filePath);
@@ -21,5 +21,5 @@ module.exports = promisify((filePath, password, callback) => {
   end.on('close', function(err) {
     callback(err, writePath);
   });
-  start.pipe(decrypt).pipe(unzip).pipe(end);
+  start.pipe(unzip).pipe(decrypt).pipe(end);
 });

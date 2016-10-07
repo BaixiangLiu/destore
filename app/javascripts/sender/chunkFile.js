@@ -1,8 +1,8 @@
 'use strict';
-const Ethereum = require('./../ethereum/ethereum.js');
-const Upload = require('./../../models/Upload.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const Upload = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
-const IPFS = require('./../ipfs/ipfs.js');
+const IPFS = require('./../../../libs/ipfs/ipfs.js');
 
 /**
 * Breaks up an ipfs hash link into its DAG links. Then saves the hashes into the db

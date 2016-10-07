@@ -1,8 +1,8 @@
 'use strict';
-const Ethereum = require('./../ethereum/ethereum.js');
-const Upload = require('./../../models/Upload.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const Upload = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
-const nestedHexToAscii = require('./../ethereum/nestedHexToAscii.js');
+const nestedHexToAscii = require('./../../../libs/ethereum/nestedHexToAscii.js');
 
 /**
 * Gets hashAdddress of a file based on either filepath from db and uploads to DeStore

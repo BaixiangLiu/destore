@@ -3,7 +3,7 @@ var zlib = require('zlib');
 var fs = require('fs');
 const crypto = require('crypto');
 const promisify = require('es6-promisify');
-const config = require('./../config/config.js');
+const config = require('./../../../libs/config/config.js');
 
 // start pipe
 // r.pipe(zip).pipe(encrypt).pipe(decrypt).pipe(unzip).pipe(w);

@@ -1,5 +1,5 @@
 'use strict';
-const Ethereum = require('./../ethereum/ethereum.js');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
 const promisify = require('es6-promisify');
 
 /** NOT BEING USED

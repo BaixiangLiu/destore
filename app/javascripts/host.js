@@ -1,8 +1,7 @@
 const nodeRequire = require;
 const Ethereum = nodeRequire('../../libs/ethereum/ethereum.js');
 const IPFS = nodeRequire('../../libs/ipfs/ipfs.js');
-const Receiver = nodeRequire('../../libs/receiver/receiver.js');
-
+const Receiver = nodeRequire('./receiver/receiver.js');
 
 const DeStoreAddress = nodeRequire('../../models/DeStoreAddress');
 const configuration = nodeRequire('../../libs/config/config.js');
@@ -47,7 +46,6 @@ $('.question').on({
 $('body').on('click', '.withdraw', function() {
   withdrawAll();
 });
-
 
 var isChangingStorage = false;
 var isChangePending = false;
