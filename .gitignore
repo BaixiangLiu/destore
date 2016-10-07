@@ -1,7 +1,6 @@
 node_modules
 .DS_Store
 npm-debug.log
-data/**
 files/upload/**
 files/download/**
 files/storage/**

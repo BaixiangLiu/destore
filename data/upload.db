@@ -1,0 +1,2 @@
+{"$$indexCreated":{"fieldName":"hashAddress","unique":true,"sparse":true}}
+{"$$indexCreated":{"fieldName":"fileName","unique":true,"sparse":true}}
