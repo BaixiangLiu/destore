@@ -15,6 +15,7 @@ module.exports = promisify((callback) => {
     if (err || docs.length === 0) {
       // this error was bad. it doesnt need to here
       // callback(new Error('Could not find a doc with isHosted of false'), null);
+      callback(null)
       return;
     }
     const hosted = []; // the hashes of the hosted files

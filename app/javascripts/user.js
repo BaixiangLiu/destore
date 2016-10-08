@@ -11,6 +11,7 @@ const config = new Config();
 
 const Sender = nodeRequire('./sender/sender.js');
 
+const get_elapsed_time_string = nodeRequire('./utils/timeString.js');
 //Initializes daemon when on page
 IPFS.init();
 IPFS.daemon();
@@ -51,6 +52,11 @@ Sender.listUploadDb()
     updateTotalCost();
   });
 
+
+
+
+/* ##### DROPZONE ##### */
+
 $('.dragdropQ').on({
   mouseenter: function() {
     $('#dragdropHelp').css('display', 'inline-block');
@@ -69,8 +75,6 @@ $('.uploadQ').on({
   }
 });
 
-
-// DROPZONE FUNCTIONALITY
 document.ondragover = document.ondrop = (ev) => {
   ev.preventDefault();
 };
@@ -114,7 +118,24 @@ $('.upload-drop-zone').on('drop', (ev) => {
     });
 });
 
+//1 second Interval for Timer
+var elapsed_seconds = 0;
+setInterval(function() {
+  elapsed_seconds = elapsed_seconds + 1;
+  $('#timer').text(get_elapsed_time_string(elapsed_seconds));
+}, 1000);
+
+//1 minute Balance Checker
+checkBalance();
+setInterval(function() {
+  checkBalance();
+}, 60000);
+
+/* ##### EVENT HANDLERS ##### */
+
 $('body').on('click', '.mount', function() {
+  console.log('clicking on mount');
+  $(this).attr('disabled', true);
   var filePath = $(this).closest('.file').data('filepath');
   var fileName = path.basename(filePath);
   var fileValue = $(this).closest('.file').find('.recNum').val();
@@ -147,6 +168,7 @@ $('body').on('click', '.mount', function() {
 });
 
 $('body').on('click', '.distribute', function() {
+  $(this).attr('disabled', true);
   var fileName = path.basename($(this).closest('.file').data('filepath'));
   var userNum = $(this).closest('.file').find('.recNum').val() || 3;
   console.log(userNum);
@@ -175,6 +197,7 @@ $('body').on('click', '.distribute', function() {
 });
 
 $('body').on('click', '.retrieve', function() {
+  $(this).attr('disabled', true);
   const fileName = path.basename($(this).closest('.file').data('filepath'));
   Sender.retrieveFile(fileName)
     .then((writePath) => {
@@ -182,6 +205,7 @@ $('body').on('click', '.retrieve', function() {
       return Sender.decrypt(writePath, 'hello');
     })
     .then(writePath => {
+      $(this).attr('disabled', false);
       // console.log(writePath);
     })
     .catch(err => {
@@ -212,52 +236,19 @@ window.onbeforeunload = (ev) => {
   });
 };
 
-function get_elapsed_time_string(total_seconds) {
-  function pretty_time_string(num) {
-    return ( num < 10 ? '0' : '' ) + num;
-  }
+$(document).on('click', '.signOut', () => {
+  config.clear('startup');
+  window.location = '../html/signup.html';
+});
 
-  var hours = Math.floor(total_seconds / 3600);
-  total_seconds = total_seconds % 3600;
 
-  var minutes = Math.floor(total_seconds / 60);
-  total_seconds = total_seconds % 60;
-
-  var seconds = Math.floor(total_seconds);
-
-  // Pad the minutes and seconds with leading zeros, if required
-  hours = pretty_time_string(hours);
-  minutes = pretty_time_string(minutes);
-  seconds = pretty_time_string(seconds);
-
-  // Compose the string for display
-  var currentTimeString = hours + ':' + minutes + ':' + seconds;
-
-  return currentTimeString;
-}
-
-//1 second Interval for Timer
-var elapsed_seconds = 0;
-setInterval(function() {
-  elapsed_seconds = elapsed_seconds + 1;
-  $('#timer').text(get_elapsed_time_string(elapsed_seconds));
-}, 1000);
-
-//1 minute Balance Checker
-checkBalance();
-setInterval(function() {
-  checkBalance();
-}, 60000);
+/* ##### FUNCTIONS ##### */
 
 function checkBalance() {
   console.log(Ethereum.getBalanceEther());
   const balance = Ethereum.getBalanceEther().toFixed(3) || 0;
   $('#balance').text(balance);
 }
-$(document).on('click', '.signOut', () => {
-  config.clear('startup');
-  window.location = '../html/signup.html';
-});
 
 function updateTotalCost() {
   const $totalCost = $('#cost');

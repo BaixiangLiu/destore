@@ -10,6 +10,7 @@ const bytesMag = nodeRequire('./utils/bytesMag');
 
 const Config = nodeRequire('electron-config');
 const config = new Config();
+const get_elapsed_time_string = nodeRequire('./utils/timeString.js');
 
 //Initializes daemon when on page
 IPFS.init();
@@ -56,7 +57,7 @@ $('.dash__change__storage__button').on('click', function(e) {
   }
   if (isChangingStorage === false) {
     isChangingStorage = true;
-    newStorageInput = $('<input>');
+    newStorageInput = $('<input placeholder="Stroage in GB">');
     $('.dash__total__storage__value').text('');
     $('.dash__total__storage__title').html(newStorageInput);
     $('.dash__total__storage__title').append('GB');
@@ -65,18 +66,21 @@ $('.dash__change__storage__button').on('click', function(e) {
     var storageValue = newStorageInput.val();
     storageValue = storageValue * 1024 * 1024 * 1024;
     console.log(storageValue);
+    $(this).attr('disabled', true);
     Ethereum.deStore().receiverChangeStorage(storageValue)
       .then(tx => {
         console.log('tx for change storage went thru');
         return Ethereum.deStore().receiverGetStorage();
       })
       .then(amount => {
+        $(this).attr('disabled', false);
         $('.dash__total__storage__value').text(bytesMag(amount));
         $('.dash__total__storage__title').html('Storage Limit:');
         isChangePending = false;
         isChangingStorage = false;
       })
       .catch(err => {
+        $(this).attr('disabled', false);
         console.error(err);
         isChangePending = false;
       });
@@ -92,7 +96,7 @@ var elapsed_seconds = 0;
 setInterval(function() {
   elapsed_seconds = elapsed_seconds + 1;
   $('#dash__time__timer ').text(get_elapsed_time_string(elapsed_seconds));
-}, 1000 * 60);
+}, 1000);
 
 //Checks Contract and Account Balance (every minute)
 checkBalance();
@@ -130,7 +134,6 @@ function updateHostInfos() {
       return Receiver.listHostDb();
     })
     .then(docs => {
-
       console.log(docs);
       let storageSize = 0;
       $('.dash__storage__hashes').text('');
@@ -188,13 +191,16 @@ function contractBalance() {
 * Calls receiver withdrawAll and then updates the dash
 **/
 function withdrawAll() {
+  $('.withdraw').attr('disabled', true);
   Receiver.withdrawAll()
     .then(amount => {
+      $('.withdraw').attr('disabled', false);
       console.log(amount);
       checkBalance();
       contractBalance();
     })
     .catch(err => {
+      $('.withdraw').attr('disabled', false);
       console.error(err);
     });
 }
@@ -202,35 +208,11 @@ function withdrawAll() {
 function hostAll() {
   Receiver.hostAll()
     .then(docs => {
-
+      updateHostInfos();
     })
     .catch(err => {
       console.error(err);
     });
-}
-
-function get_elapsed_time_string(total_seconds) {
-  function pretty_time_string(num) {
-    return ( num < 10 ? '0' : '' ) + num;
-  }
-
-  var hours = Math.floor(total_seconds / 3600);
-  total_seconds = total_seconds % 3600;
-
-  var minutes = Math.floor(total_seconds / 60);
-  total_seconds = total_seconds % 60;
-
-  var seconds = Math.floor(total_seconds);
-
-  // Pad the minutes and seconds with leading zeros, if required
-  hours = pretty_time_string(hours);
-  minutes = pretty_time_string(minutes);
-  seconds = pretty_time_string(seconds);
-
-  // Compose the string for display
-  var currentTimeString = hours + ':' + minutes + ':' + seconds;
-
-  return currentTimeString;
 }
 
 // Run on page initialization

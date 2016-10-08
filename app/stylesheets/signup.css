@@ -36,11 +36,12 @@ a {
 
 a:hover {
   color: #61A7F8;
+  text-decoration: none;
 }
 
 a:focus {
   color: #23527c;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .signup-submit-button {
@@ -105,10 +106,12 @@ a:focus {
 li.active a {
   background: #3b417f;
   color: white;
+  text-decoration: none;
 }
 
 .tab-links__blank {
-  color: #4A90E2;
+  background:#3b417f;
+  color: white;
   padding:9px 15px;
   display: none;
   border-radius:3px 3px;
@@ -205,19 +208,6 @@ li.active a {
   color: white;
 }
 
-/*.signin {
-  background: #888FB9;
-  color: #3b417f;
-  border-radius: 3px;
-  width: 100px;
-  height: 40px;
-}
-
-.signin:hover {
-  background: #3b417f;
-  color: white;
-}*/
-
 .signin-link {
   position: absolute;
   margin-left: auto;
@@ -225,16 +215,6 @@ li.active a {
   left: 0;
   right: 0;
   bottom: 10%;
-}
-
-#signinHelp {
-  display: none;
-  position: absolute;
-  margin: 0 ;
-  background-color: black;
-  color: white;
-  padding: 5px;
-  width: 500px;
 }
 
 #popup-signUp {
@@ -257,6 +237,16 @@ li.active a {
   color: white;
   text-align: left;
   padding: 7px 10px;
+}
+
+#popup-receiver__signinHelp {
+  display: none;
+  position: absolute;
+  margin: 0 ;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  width: 500px;
 }
 
 #receiver-amount {
@@ -285,12 +275,14 @@ li.active a {
   padding: 7px 10px;
 }
 
-#popup2 {
+#popup-sender__signinHelp {
   display: none;
-  background: #4c4c4c;
+  position: absolute;
+  margin: 0 ;
+  background-color: black;
   color: white;
-  text-align: left;
-  padding: 7px 10px;
+  padding: 5px;
+  width: 500px;
 }
 
 .popup-sender__auth {
@@ -298,13 +290,6 @@ li.active a {
   margin-top: 100px;
   color: black;
 }
-
-
-#authFail {
-  display: none;
-  color: red;
-}
-
 
 .no-close .ui-dialog-titlebar-close {
   display: none;
@@ -328,8 +313,6 @@ meter[value="2"]::-moz-meter-bar { background: yellow; }
 meter[value="3"]::-moz-meter-bar { background: orange; }
 meter[value="4"]::-moz-meter-bar { background: green; }
 
-
-
 #signup-user {
   display: none;
 }
@@ -349,3 +332,20 @@ meter[value="4"]::-moz-meter-bar { background: green; }
 .signup {
 
 }
+
+.error-message {
+  color: #ff3333;
+}
+
+/*.signin {
+  background: #888FB9;
+  color: #3b417f;
+  border-radius: 3px;
+  width: 100px;
+  height: 40px;
+}
+
+.signin:hover {
+  background: #3b417f;
+  color: white;
+}*/

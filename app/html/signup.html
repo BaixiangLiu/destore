@@ -55,7 +55,7 @@
                   <input class="input login-password" type="password" placeholder="Password" required />
                 </div>
                 <div class="row">
-                  <span class="wrong-password"></span>
+                  <span class="error-message wrong-password"></span>
                 </div>
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
@@ -74,7 +74,7 @@
                   <input class="input password-confirm" type="password" placeholder="Confirm Password" required />
                 </div>
                 <div class="row">
-                  <span class="password-no-match"></span>
+                  <span class="error-message password-no-match"></span>
                 </div>
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
@@ -100,7 +100,7 @@
                   <input class="input login-password" type="password" placeholder="Password" required />
                 </div>
                 <div class="row">
-                  <span class="wrong-password"></span>
+                  <span class="error-message wrong-password"></span>
                 </div>
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
@@ -119,7 +119,7 @@
                   <input class="input password-confirm" type="password" placeholder="Confirm Password" required />
                 </div>
                 <div class="row">
-                  <span class="password-no-match"></span>
+                  <span class="error-message password-no-match"></span>
                 </div>
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
@@ -145,40 +145,44 @@
     <!--##### SIGNUP POPUP ##### -->
     <div id="popup-signUp">
       </h5>You just created a new Ethereum account!</h5>
-      <p>Account ID: <span class="userID"></span><img class="question signinQ" src="../images/question.png" alt="question"></p>
+      <p>Account ID: <span class="userID"></span></p>
       <br/><br/>
-      <div id="signinHelp">
-        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
-      </div>
       <button class="popup-signUp__button">Back</button>
     </div> <!-- popup -->
 
     <!-- ##### SENDER POPUP  #####-->
     <div id="popup-sender">
       <h3>Creating a User Account</h3>
+      <div id="popup-sender__signinHelp">
+        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
+      </div>
       <p>Account ID: <span class="userID"></span></p>
       <p>Account Balance: <span class="popup-current-balance"></span> Ether</p>
-      <p>Please make sure you have at least 1 ether into your account before continuing.</p>
+      <p>
+        Please make sure you have at least 1 ether into your account before continuing.
+        <img class="question popup-sender__signinQ" src="../images/question.png" alt="question">
+      </p>
       <button class="popup-sender__auth">Authenticate</button>
-      <p><span class="no-funds"></span></p>
+      <p><span class="error-message no-funds"></span></p>
     </div> <!-- popup -->
 
     <!-- ##### RECEIVER POPUP #####-->
     <div id="popup-receiver">
       <h3>Creating a Host Account</h3>
+      <div id="popup-receiver__signinHelp">
+        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
+      </div>
       <p>Account ID: <span class="userID"></span></p>
       <p>Account Balance: <span class="popup-current-balance"></span> Ether</p>
-      <p>Please make sure you have at least 1 ether into your account before continuing.</p>
+      <p>
+        Please make sure you have at least 1 ether into your account before continuing.
+        <img class="question popup-receiver__signinQ" src="../images/question.png" alt="question">
+      </p>
       <form id="receiver-amount">
         <p>How much storage would you like to provide in GB? <input id="receiver-amount__input" /></p>
         <input type="submit" class="popup-receiver__auth" value="Authenticate" />
       </form>
-      <p><span class="no-funds"></span></p>
-    </div> <!-- popup -->
-
-
-    <div id="popup2">
-      Not connected to Ethereum
+      <p><span class="error-message no-funds"></span></p>
     </div> <!-- popup -->
 
   </body>
