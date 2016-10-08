@@ -112,6 +112,7 @@ li.active a {
 }
 
 .tab-links__blank {
+  color: #4A90E2;
   padding:9px 15px;
   display: none;
   border-radius:3px 3px;
@@ -120,7 +121,7 @@ li.active a {
   font-weight:600;
   /*color:#4c4c4c;*/
   transition:all linear 0.15s;
-  width: 150px;
+  width: 300px;
   height: 60px;
   font-size: 30px;
 }
