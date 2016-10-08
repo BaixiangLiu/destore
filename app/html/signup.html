@@ -24,9 +24,12 @@
     </div> <!-- header -->
     <div class="tabs">
       <ul class="tab-links">
-          <li><a href="#tab-user">User</a></li>
-          <li><a href="#tab-host">Host</a></li>
+          <li><a href="#tab-user" class="tab-links__user">User</a></li>
+          <li><a href="#tab-host" class="tab-links__host">Host</a></li>
+          <li><span class="tab-links__blank"></span></li>
+          <li><span class="tab-links__blank"></span></li>
       </ul>
+      <!-- ###### B-->
 
       <div class="tab-content">
         <!-- <div id="tab-accounts" class="tab">
@@ -40,7 +43,7 @@
         <div id="tab-user" class="tab">
           <div class="container">
 
-            <!--######## SIGN IN ####### -->
+            <!--######## USER SIGN IN ####### -->
 
             <div class ="form-group" id="signin-user">
               <form data-tab="user" class="form-signin">
@@ -55,10 +58,11 @@
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
                 </div>
+                <span class="wrong-password"></span>
               </form>
             </div>
 
-            <!--######## SIGN UP ####### -->
+            <!--######## USER SIGN UP ####### -->
 
             <div class ="form-group" id="signup-user">
               <form data-tab="user" class="form-signup">
@@ -66,7 +70,10 @@
                   <input type="password" class="input password" placeholder="Enter a Strong Password" required />
                 </div>
                 <div class="row">
-                  <input class="input" type="password" placeholder="Confirm Password" required />
+                  <input class="input password-confirm" type="password" placeholder="Confirm Password" required />
+                </div>
+                <div class="row">
+                  <span class="password-no-match"></span>
                 </div>
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
@@ -79,7 +86,7 @@
         <div id="tab-host" class="tab">
           <div class="container">
 
-            <!--######## SIGN IN ####### -->
+            <!--######## HOST SIGN IN ####### -->
 
             <div class ="form-group" id="signin-host">
               <form data-tab="host" class="form-signin">
@@ -94,23 +101,22 @@
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
                 </div>
+                <span class="wrong-password"></span>
               </form>
             </div>
 
-            <!--######## SIGN UP ####### -->
+            <!--######## HOST SIGN UP ####### -->
 
             <div class ="form-group" id="signup-host">
-              <form data-tab="host" class="form-signup">
+              <form data-tab="user" class="form-signup">
                 <div class="row">
                   <input type="password" class="input password" placeholder="Enter a Strong Password" required />
                 </div>
                 <div class="row">
-                  <input class="input" type="password" placeholder="Confirm Password" required />
-                  <div class="registrationFormAlert" id="divCheckPasswordMatch"></div>
+                  <input class="input password-confirm" type="password" placeholder="Confirm Password" required />
                 </div>
-                <div class="row"> <
-                  <input class="input storage" type="number" placeholder="How much storage will you provide?" />
-                  <div style="display: inline-block; position: absolute; right: 60px; font-size: 30px">GB</div>
+                <div class="row">
+                  <span class="password-no-match"></span>
                 </div>
                 <div class="row">
                   <input class="submit" type="submit" value="Submit">
@@ -132,57 +138,43 @@
         <a class="btn btn-primary signup-new" href="#tab-signin">Create An Ethereum Account</a>
       </div>
     </div> <!-- tab-content -->
-    <div id="popup">
-      Your Public Account ID is:
-      <div class="userID"></div>
-      Please add at least 1 ether into your account before continuing.
+
+    <!--##### SIGNUP POPUP ##### -->
+    <div id="popup-signUp">
+      </h5>You just created a new Ethereum account!</h5>
+      <p>Account ID: <span class="userID"></span></p>
       <br/><br/>
       <img class="question signinQ" src="../images/question.png" alt="question">
       <div id="signinHelp">
         Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
       </div>
       <div style="text-align: center;">
-        <button id="authenticate">Authenticate</button>
+        <button class="popup-signUp__button">Back</button>
       </div>
       <div id="authFail">Please enter more money and try again</div>
     </div> <!-- popup -->
 
+    <!-- ##### SENDER POPUP  #####-->
     <div id="popup-sender">
-      Your Public Account ID is:
-      <div class="userID"></div>
-      SENDER
-      Please add at least 1 ether into your account before continuing.
-      <br/><br/>
-      <img class="question signinQ" src="../images/question.png" alt="question">
-      <div id="signinHelp">
-        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
-      </div>
-      <div style="text-align: center;">
-        <button id="authenticate">Authenticate</button>
-      </div>
-      <div id="authFail">Please enter more money and try again</div>
+      <h3>Creating a User Account</h3>
+      <p>Account ID: <span class="userID"></span></p>
+      <p>Account Balance: <span class="popup-current-balance"></span> Ether</p>
+      <p>Please make sure you have at least 1 ether into your account before continuing.</p>
+      <button class="popup-sender__auth">Authenticate</button>
+      <span class="no-funds"></span>
     </div> <!-- popup -->
 
+    <!-- ##### RECEIVER POPUP #####-->
     <div id="popup-receiver">
-      Your Public Account ID is:
-      <div class="userID"></div>
-      HOST
-      Please add at least 1 ether into your account before continuing.
-      <br/><br/>
+      <h3>Creating a Host Account</h3>
+      <p>Account ID: <span class="userID"></span></p>
+      <p>Account Balance: <span class="popup-current-balance"></span> Ether</p>
+      <p>Please make sure you have at least 1 ether into your account before continuing.</p>
       <form id="receiver-amount">
-        How much storage would you like to provide in GB?
-        <br />
-        <input id="receiver-amount__input" />
-        <input id="receiver-amount__submit" type="submit" />
+        <p>How much storage would you like to provide in GB? <input id="receiver-amount__input" /></p>
+        <input type="submit" class="popup-receiver__auth" value="Authenticate" />
       </form>
-      <img class="question signinQ" src="../images/question.png" alt="question">
-      <div id="signinHelp">
-        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
-      </div>
-      <div style="text-align: center;">
-        <button id="authenticate">Authenticate</button>
-      </div>
-      <div id="authFail">Please enter more money and try again</div>
+      <span class="no-funds"></span>
     </div> <!-- popup -->
 
 

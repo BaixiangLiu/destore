@@ -9,6 +9,15 @@
   link text: #4A90E2;
 }*/
 
+html, body, div, span, p, li, a  {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
 body {
   /*background-color: #070707;*/
   color: #C3CCDB;
@@ -85,6 +94,7 @@ a:focus {
   /*color:#4c4c4c;*/
   transition:all linear 0.15s;
   width: 150px;
+  height: 60px;
   font-size: 30px;
 }
 
@@ -101,6 +111,19 @@ li.active a {
   color: white;
 }
 
+.tab-links__blank {
+  padding:9px 15px;
+  display: none;
+  border-radius:3px 3px;
+  /*background:#4bb5db;*/
+  font-size:16px;
+  font-weight:600;
+  /*color:#4c4c4c;*/
+  transition:all linear 0.15s;
+  width: 150px;
+  height: 60px;
+  font-size: 30px;
+}
 /*----- Content of Tabs -----*/
 .tab-content {
   padding:15px;
@@ -214,12 +237,18 @@ li.active a {
   width: 500px;
 }
 
-#popup {
+#popup-signUp {
   display: none;
   background: #4c4c4c;
   color: white;
   text-align: left;
   padding: 7px 10px;
+}
+
+.popup-signUp__button {
+  margin: 0 auto;
+  margin-top: 100px;
+  color: black;
 }
 
 #popup-receiver {
@@ -239,7 +268,13 @@ li.active a {
 }
 
 #receiver-amount__submit {
-  
+
+}
+
+.popup-receiver__auth {
+  margin: 0 auto;
+  margin-top: 100px;
+  color: black;
 }
 
 #popup-sender {
@@ -258,16 +293,18 @@ li.active a {
   padding: 7px 10px;
 }
 
+.popup-sender__auth {
+  margin: 0 auto;
+  margin-top: 100px;
+  color: black;
+}
+
+
 #authFail {
   display: none;
   color: red;
 }
 
-#authenticate {
-  margin: 0 auto;
-  margin-top: 100px;
-  color: black;
-}
 
 .no-close .ui-dialog-titlebar-close {
   display: none;
