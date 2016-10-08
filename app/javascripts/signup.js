@@ -23,12 +23,9 @@ $(document).ready(function() {
   // Show/Hide Tabs
   $('.tabs .tab-links a').on('click', function(e) {
     var currentAttrValue = $(this).attr('href');
-
     $('.tabs ' + currentAttrValue).fadeIn(400).siblings().hide();
-
     // Change/remove current tab to active
     $(this).parent('li').addClass('active').siblings().removeClass('active');
-
     e.preventDefault();
   });
 
@@ -97,7 +94,6 @@ $(document).ready(function() {
       });
       window.location = `../html/${userType}.html`;
     }
-
 
     if (Ethereum.check()) {
       console.log('ethereum check');
@@ -178,9 +174,33 @@ $('.signup-new').on('click', function() {
   }
 });
 
-
 function authenticatePopUp() {
+  $('.userID').text(Ethereum.accounts[config.get('user.accountIndex')]);
   $('#popup').dialog({
+    dialogClass: 'no-close',
+    draggable: false,
+    resizable: false,
+    modal: true,
+    width: 600,
+    height: 300
+  });
+}
+
+function receiverPopUp() {
+  $('.userID').text(Ethereum.accounts[config.get('user.accountIndex')]);
+  $('#popup-receiver').dialog({
+    dialogClass: 'no-close',
+    draggable: false,
+    resizable: false,
+    modal: true,
+    width: 600,
+    height: 300
+  });
+}
+
+function senderPopUp() {
+  $('.userID').text(Ethereum.accounts[config.get('user.accountIndex')]);
+  $('#popup-sender').dialog({
     dialogClass: 'no-close',
     draggable: false,
     resizable: false,
@@ -215,15 +235,14 @@ function senderAdd() {
   });
 }
 
-function receiverAdd() {
-  var storage = 1024 * 1024 * 1024 * config.get('user.store');
-  Ethereum.deStore().receiverAdd(storage, {
+function receiverAdd(amount) {
+  Ethereum.deStore().receiverAdd(amount, {
     from: Ethereum.account,
     gas: 1000000
   })
   .then(tx => {
     console.log('Receiver Added');
-    window.location = '../html/sender.html';
+    window.location = '../html/host.html';
   })
   .catch(err => {
     console.error(err);
@@ -238,8 +257,8 @@ function senderCheckInit(isSignUp) {
     if (status === true) {
       window.location = '../html/user.html';
     } else if (isSignUp === false) {
-      authenticatePopUp();
-    } else if (isSignUp === true && Ethereum.getBalanceEther() > 0.01) {
+      senderPopUp();
+    } else if (isSignUp === true && Ethereum.getBalanceEther() > 1) {
       console.log('making sender');
       senderAdd();
     } else {
@@ -260,9 +279,10 @@ function receiverCheckInit(isSignUp) {
     if (status === true) {
       window.location = '../html/host.html';
     } else if (isSignUp === false) {
-      authenticatePopUp();
-    } else if (isSignUp === true && Ethereum.getBalanceEther() > 0.01) {
-      console.log('making receiver');
+      receiverPopUp();
+    } else if (isSignUp === true && Ethereum.getBalanceEther() > 1) {
+      // probably don't need this else if anymore
+      console.log('making reeiver');
       receiverAdd();
     } else {
       $('#authFail').css('display', 'block');
@@ -272,3 +292,14 @@ function receiverCheckInit(isSignUp) {
     console.error(err);
   });
 }
+
+$('#receiver-amount').on('submit', function(e) {
+  e.preventDefault();
+  let amount = $(this).find('#receiver-amount__input').val();
+  amount = 1024 * 1024 * 1024 * amount;
+  if (Ethereum.getBalanceEther() > 1) {
+    receiverAdd(amount);
+  } else {
+    console.error('not more than 1 ether');
+  }
+});

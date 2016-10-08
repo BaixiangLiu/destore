@@ -1,12 +1,8 @@
 'use strict';
 const program = require('commander');
 const Ethereum = require('./libs/ethereum/ethereum.js');
-// const IPFS = require('./libs/ipfs/ipfs.js');
-
 const Upload = require('./models/Upload.js');
 const Host = require('./models/Host.js');
-const Cli = require('./models/Cli.js');
-
 const DeStoreAddress = require('./models/DeStoreAddress.js');
 const config = require('./libs/config/config.js');
 
@@ -50,6 +46,12 @@ if (program.test) {
     })
     .then(bool => {
       return Ethereum.unlockAccount(Ethereum.accounts[4], 'hello', 10000000);
+    })
+    .then(bool => {
+      return Ethereum.unlockAccount(Ethereum.accounts[5], 'hello', 10000000);
+    })
+    .then(bool => {
+      return Ethereum.unlockAccount(Ethereum.accounts[6], 'hello', 10000000);
     })
     .then(bool => {
       return Ethereum.deploy('DeStore', [], deployOptions);

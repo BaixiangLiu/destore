@@ -13,6 +13,8 @@
     "init-testrpc": "node cli testrpc",
     "init-dev": "node cli test",
     "build-contract": "node cli build",
+    "zdev": "geth --identity “test”  --datadir /Users/zhiwen/Library/Ethereum/test --rpc console",
+    "zdev-reset": "geth --datadir /Users/zhiwen/Library/Ethereum/test init /Users/zhiwen/Library/Ethereum/test/test-genesis.json",
     "package": "asar pack DeStore.app/Contents/app DeStore.app/Contents/Resources/app.asar",
     "build": "electron-packager ./ DeStore --prune --overwrite && cp electron.icns DeStore-darwin-x64/DeStore.app/Contents/Resources/electron.icns"
   },

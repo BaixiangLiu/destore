@@ -222,6 +222,34 @@ li.active a {
   padding: 7px 10px;
 }
 
+#popup-receiver {
+  display: none;
+  background: #4c4c4c;
+  color: white;
+  text-align: left;
+  padding: 7px 10px;
+}
+
+#receiver-amount {
+
+}
+
+#receiver-amount__input {
+  color: black;
+}
+
+#receiver-amount__submit {
+  
+}
+
+#popup-sender {
+  display: none;
+  background: #4c4c4c;
+  color: white;
+  text-align: left;
+  padding: 7px 10px;
+}
+
 #popup2 {
   display: none;
   background: #4c4c4c;

@@ -20,7 +20,6 @@ class Ethereum {
    * Create an Ethereum object. Will need to use Ethereum.init() to connect to the Web3 RPC provider and use the Ethereun object methods
    */
   constructor() {
-    this._web3 = init();
     this._web3IPC = null;
     this._init = false;
     this._execBind = null;
@@ -56,6 +55,7 @@ class Ethereum {
    * @param {string} directoryPath Optional. Directory path where contract files are located. If none is given the directory path will be retrieved from Ethereum.config.contracts
    */
   buildContracts(contractFiles, directoryPath) {
+    this.init();
     return buildContracts(contractFiles, directoryPath);
   }
 
@@ -70,7 +70,7 @@ class Ethereum {
       this._web3 = init(rpcHost, rpcPort);
       this._init = true;
       if (this.check() === false) {
-        throw new Error('Not connected to RPC');
+        console.error(new Error('Not connected to RPC'));
       } else {
         this.accounts = this._web3.eth.accounts;
         // rebinding this doesn't work
@@ -96,6 +96,7 @@ class Ethereum {
    * @return {bool} The true or false status of the RPC connection
    */
   check() {
+    this.init();
     if (!this._web3) {
       return false;
     } else {

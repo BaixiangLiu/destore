@@ -1,4 +1,5 @@
 const electron = require('electron');
+const IPFS = require('./../libs/ipfs/ipfs.js');
 const Config = require('electron-config');
 const config = new Config();
 const configuration = require('./../libs/config/config.js');
@@ -10,9 +11,9 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-let startupPath;
-startupPath = config.get('user.path');
-if(!startupPath) startupPath = 'signup';
+// let startupPath;
+// startupPath = config.get('user.path');
+// if(!startupPath) startupPath = 'signup';
 
 function createWindow () {
   // Create the browser window.
@@ -30,7 +31,7 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
-  })
+  });
 }
 
 // This method will be called when Electron has finished
@@ -45,7 +46,7 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-})
+});
 
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the

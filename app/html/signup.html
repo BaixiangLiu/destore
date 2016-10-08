@@ -135,7 +135,7 @@
     <div id="popup">
       Your Public Account ID is:
       <div class="userID"></div>
-      Please add at least 0.09 ether into your account before continuing.
+      Please add at least 1 ether into your account before continuing.
       <br/><br/>
       <img class="question signinQ" src="../images/question.png" alt="question">
       <div id="signinHelp">
@@ -146,6 +146,45 @@
       </div>
       <div id="authFail">Please enter more money and try again</div>
     </div> <!-- popup -->
+
+    <div id="popup-sender">
+      Your Public Account ID is:
+      <div class="userID"></div>
+      SENDER
+      Please add at least 1 ether into your account before continuing.
+      <br/><br/>
+      <img class="question signinQ" src="../images/question.png" alt="question">
+      <div id="signinHelp">
+        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
+      </div>
+      <div style="text-align: center;">
+        <button id="authenticate">Authenticate</button>
+      </div>
+      <div id="authFail">Please enter more money and try again</div>
+    </div> <!-- popup -->
+
+    <div id="popup-receiver">
+      Your Public Account ID is:
+      <div class="userID"></div>
+      HOST
+      Please add at least 1 ether into your account before continuing.
+      <br/><br/>
+      <form id="receiver-amount">
+        How much storage would you like to provide in GB?
+        <br />
+        <input id="receiver-amount__input" />
+        <input id="receiver-amount__submit" type="submit" />
+      </form>
+      <img class="question signinQ" src="../images/question.png" alt="question">
+      <div id="signinHelp">
+        Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
+      </div>
+      <div style="text-align: center;">
+        <button id="authenticate">Authenticate</button>
+      </div>
+      <div id="authFail">Please enter more money and try again</div>
+    </div> <!-- popup -->
+
 
     <div id="popup2">
       Not connected to Ethereum

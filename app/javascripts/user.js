@@ -14,7 +14,6 @@ const Sender = nodeRequire('./sender/sender.js');
 //Initializes daemon when on page
 IPFS.init();
 IPFS.daemon();
-Ethereum.init();
 
 //TESTING
 configuration.contracts.deStore = DeStoreAddress.get();
