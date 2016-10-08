@@ -37,6 +37,7 @@ $(document).ready(function() {
     if (userPass === userPassConfirm) {
       Ethereum.createAccount(userPass)
         .then(account => {
+          $(this).find('.password-no-match').text('');
           Ethereum.accounts.push(account);
           accountSelection();
           signUpPopUp();

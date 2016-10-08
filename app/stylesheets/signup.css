@@ -59,10 +59,6 @@ a:focus {
   border-radius: 3px;
 }
 
-.form-signup {
-  overflow: hidden;
-}
-
 .accounts {
   display: flex;
   flex-flow: column;
@@ -137,32 +133,35 @@ li.active a {
 }
 
 .tab {
-    display:none;
+  display:none;
 }
 
 .tab.active {
-    display:block;
+  display:block;
 }
 
 .form-signup {
   font-family: 'Abel', sans-serif;
   font-size: 20px;
+  overflow: hidden;
+  padding: 20px;
 }
 
 .form-signin {
   font-family: 'Abel', sans-serif;
   font-size: 20px;
+  overflow: hidden;
+  padding: 20px;
 }
 
-
 .input {
-    border: 0;
-    outline: 0;
-    background: transparent;
-    border-bottom: 2px solid black;
-    width: 33%;
-    font-size: 23px;
-    margin: 10px 2.5%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 2px solid black;
+  width: 33%;
+  font-size: 23px;
+  margin-bottom: 2.5%;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */

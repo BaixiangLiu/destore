@@ -55,9 +55,11 @@
                   <input class="input login-password" type="password" placeholder="Password" required />
                 </div>
                 <div class="row">
+                  <span class="wrong-password"></span>
+                </div>
+                <div class="row">
                   <input class="submit" type="submit" value="Submit">
                 </div>
-                <span class="wrong-password"></span>
               </form>
             </div>
 
@@ -98,9 +100,11 @@
                   <input class="input login-password" type="password" placeholder="Password" required />
                 </div>
                 <div class="row">
+                  <span class="wrong-password"></span>
+                </div>
+                <div class="row">
                   <input class="submit" type="submit" value="Submit">
                 </div>
-                <span class="wrong-password"></span>
               </form>
             </div>
 
@@ -141,16 +145,12 @@
     <!--##### SIGNUP POPUP ##### -->
     <div id="popup-signUp">
       </h5>You just created a new Ethereum account!</h5>
-      <p>Account ID: <span class="userID"></span></p>
+      <p>Account ID: <span class="userID"></span><img class="question signinQ" src="../images/question.png" alt="question"></p>
       <br/><br/>
-      <img class="question signinQ" src="../images/question.png" alt="question">
       <div id="signinHelp">
         Your Public Account ID identifies your account in Ethereum, allowing you to access/store files. Before you are able to store files, please deposit money into your account using a transfer service (i.e. Coinbase, Ethereum Wallet, Mist).
       </div>
-      <div style="text-align: center;">
-        <button class="popup-signUp__button">Back</button>
-      </div>
-      <div id="authFail">Please enter more money and try again</div>
+      <button class="popup-signUp__button">Back</button>
     </div> <!-- popup -->
 
     <!-- ##### SENDER POPUP  #####-->
@@ -160,7 +160,7 @@
       <p>Account Balance: <span class="popup-current-balance"></span> Ether</p>
       <p>Please make sure you have at least 1 ether into your account before continuing.</p>
       <button class="popup-sender__auth">Authenticate</button>
-      <span class="no-funds"></span>
+      <p><span class="no-funds"></span></p>
     </div> <!-- popup -->
 
     <!-- ##### RECEIVER POPUP #####-->
@@ -173,7 +173,7 @@
         <p>How much storage would you like to provide in GB? <input id="receiver-amount__input" /></p>
         <input type="submit" class="popup-receiver__auth" value="Authenticate" />
       </form>
-      <span class="no-funds"></span>
+      <p><span class="no-funds"></span></p>
     </div> <!-- popup -->
 
 
