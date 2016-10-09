@@ -208,7 +208,7 @@ test('Testing removeHash and listHostDb', t => {
   Ethereum.changeAccount(1);
   Receiver.removeHash('QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS')
     .then(returnPath => {
-      t.equal(returnPath, path.join(config.files.host, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS'), 'Expect path of file removed to equal the location of the file');
+      t.equal(returnPath, path.join(config.files.files, Ethereum.account, config.files.host, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS'), 'Expect path of file removed to equal the location of the file');
       return Receiver.listHostDb();
     })
     .then(docs => {
@@ -225,7 +225,7 @@ test('Testing retrieveFile', t => {
   Ethereum.changeAccount(0);
   Sender.retrieveFile('lemon.gif')
     .then(returnedPath => {
-      t.equal(returnedPath, path.join(config.files.download, 'lemon.gif'), 'Expect retrieved path to equal config files download location and file name');
+      t.equal(returnedPath, path.join(config.files.files, Ethereum.account, config.files.download, 'lemon.gif'), 'Expect retrieved path to equal config files download location and file name');
       lol(returnedPath);
       t.end();
     })

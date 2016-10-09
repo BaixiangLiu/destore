@@ -30,7 +30,7 @@ class Ethereum {
     this.defaults = {
       from: this.account,
       value: 0,
-      gas: 4000000
+      gas: 4500000
     };
     this.init();
   }

@@ -10,19 +10,19 @@ const config = require('./libs/config/config.js');
   * DeStore specific commands
   */
 program
-  .option('build', 'Build DeStore')
   .option('test', 'Sets up testing environment for DeStore')
   .option('testrpc', 'Sets up testrpc testing environment for DeStore')
   .option('deploy', 'Deploy a single DeStore contract')
   .option('receivers','Creates receivers for DeStore')
   .option('reset', 'Resets the databases for DeStore');
 
-program.parse(process.argv);
+program
+  .command('build <file>')
+  .action((file) => {
+    Ethereum.buildContracts(file);
+  });
 
-if (program.build) {
-  Ethereum.init();
-  Ethereum.buildContracts('DeStore');
-}
+program.parse(process.argv);
 
 if (program.test) {
   Ethereum.init();

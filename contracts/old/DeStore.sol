@@ -45,22 +45,18 @@ contract DeStore {
     uint index; // position in availReceivers[]
     uint balance;
     uint totalGained;
-    uint filesCount;
 
     uint availStorage; // bytes
 
-    address[] senders; // the sender that stored the particular file hash
     bytes23[2][] hashes; // each nested array contains half of entire hash
-    /*bytes[] fullHashes; // full hash for reference, will not be returned*/
+    address[] senders; // the sender that stored the particular file hash
     uint[] sizes; // sizes of each hash
     uint[] values; // amount the file sender will send the hosts every day
     uint[] fileBalances; // the balance that particular hash has obtained
-    uint[] timesPaid; // the time a file was paid. it currently just gets updated by in future could make a list of payment times. initial is 0
-    mapping(bytes => uint) fileIndexes; // so the sender knows what hash to add file balances ++ to and where to check the status
+    mapping(bytes => uint) fileIndexes; // so the sender knows what hash to add file balances ++ to
     bytes ipfsAddress;
     /*mapping(bytes => HostFile) files; // index of a certain file in files[]*/
     /*bytes23[] fileNames; // receiver will get an array of names to know whats avaliable inside files mapping*/
-    mapping(bytes => HostFile) hostFiles;
   }
 
   struct HostFile {
@@ -77,8 +73,7 @@ contract DeStore {
     bool init;
     bool status;
     uint balance;
-    mapping (bytes => File) files; // maps by file name
-    // maybe add in an array of all file names
+    mapping (bytes => File) files; // could be string of file name
   }
 
   struct File {
@@ -86,15 +81,14 @@ contract DeStore {
     bytes _name;
     uint[] sizes; // size of each file piece
     bytes23[2][] hashes; // each element contains half of entire hash [ [hashPart1, hashPart2], [], [] ]
-    /*bytes[] fullHashes;*/
     /*mapping (uint => address[]) receivers;*/
     address[] receivers;
-    uint value; // amount this file is worth per byte
+    uint value; // amount this file is worth
     bool exists;
   }
 
   /********************************************************
-  * Global Storage Variables
+  * Variables
   *********************************************************/
   address[] availReceivers;
   address owner;
@@ -142,14 +136,14 @@ contract DeStore {
   * Used by Receiver
   ********************************************************/
 
-  function receiverAdd(uint _bytes) returns (bool) {
+  function receiverAdd(uint kilobytes) returns (bool) {
     if (receivers[msg.sender].init == true) return false;
 
     receivers[msg.sender].init = true;
     receivers[msg.sender].status = true;
     receivers[msg.sender].index = availReceivers.length;
-    receivers[msg.sender].availStorage = _bytes;
     availReceivers.push(msg.sender);
+    receivers[msg.sender].availStorage = kilobytes;
 
     AddReceiver (
       msg.sender,
@@ -289,14 +283,8 @@ contract DeStore {
     returns (bool)
   {
     if (_hashes.length == _sizes.length) {
-      /*bytes[] memory _fullHashes;
-      uint k = 0;
-      for (uint i = 0; i < _hashes.length; i++) {
-        _fullHashes[k++] = addHashes(_hashes[i][0], _hashes[i][1]);
-      }*/
       senders[msg.sender].files[_fileName].exists = true;
       senders[msg.sender].files[_fileName].hashes = _hashes;
-      /*senders[msg.sender].files[_fileName].fullHashes = _fullHashes;*/
       senders[msg.sender].files[_fileName].value = _value;
       senders[msg.sender].files[_fileName].sizes = _sizes;
       AddFile(msg.sender, _fileName, _value);
@@ -319,19 +307,14 @@ contract DeStore {
       while (i <= _amount) {
         if (file.sizes[g] < receivers[availReceivers[j]].availStorage && msg.sender != availReceivers[j]) {
           i++;
-          receivers[availReceivers[j]].senders.push(msg.sender);
           receivers[availReceivers[j]].hashes.push(file.hashes[g]);
+          receivers[availReceivers[j]].senders.push(msg.sender);
           receivers[availReceivers[j]].sizes.push(file.sizes[g]);
           receivers[availReceivers[j]].values.push(file.value);
-          /*receivers[availReceivers[j]].fullHashes.push(file.fullHashes[g]);*/
-          receivers[availReceivers[j]].timesPaid.push(0); // timesPaid for files is initially at 0
-          receivers[availReceivers[j]].fileIndexes[addHashes(file.hashes[g][0], file.hashes[g][1])] = receivers[availReceivers[j]].hashes.length - 1;
           receivers[availReceivers[j]].availStorage -= file.sizes[g];
-
           /*senders[msg.sender].files[_fileName].receivers[g].push(availReceivers[j]); init// was not able to use memory file*/
           // need to verifiy this reciever list
           senders[msg.sender].files[_fileName].receivers.push(availReceivers[j]);
-
         }
         j++;
         if (j >= availReceivers.length) {
@@ -416,48 +399,5 @@ contract DeStore {
 
   function getReceiverList() constant returns (address[]) {
     return availReceivers;
-  }
-
-  /********************************************************
-  * New
-  ********************************************************/
-
-  /**
-   * Lets receciver get a HostFile struct based on an input hash address
-   *
-   * @returns
-   */
-  /*function receiverGetFile(bytes __hash)
-    external
-    receiverStatus(msg.sender)
-    constant
-    returns (HostFile)
-  {
-    return receivers[msg.sender].hostFiles[__hash];
-  }*/
-
-  /**
- * Combines two hashes and returns the byte representation
- */
-  function addHashes(bytes23 _hash1, bytes23 _hash2) returns (bytes) {
-    string memory resString = new string(_hash1.length + _hash2.length);
-    bytes memory res = bytes(resString);
-    uint k = 0;
-    for (uint i = 0; i < _hash1.length; i++) {
-      res[k++] = _hash1[i];
-    }
-
-    for (uint j = 0; j < _hash2.length; j++) {
-      res[k++] = _hash2[j];
-    }
-    return res;
-  }
-
-  function receiverGetFileIndex(address _receiverAddress, bytes23 _hash1, bytes23 _hash2)
-    receiverStatus(_receiverAddress)
-    constant
-    returns (uint)
-  {
-    return receivers[_receiverAddress].fileIndexes[addHashes(_hash1, _hash2)];
   }
 }
