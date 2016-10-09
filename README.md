@@ -5,26 +5,22 @@ DeStore aims to create a decentralized peer-to-peer file storage platform with a
 
 ### DeLib
 
-While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/delib), a light-weight, and fully-inclusive Ethereum library:
+While looking for a framework to build our app, we found that they were too restrictive for our purposes so we built: [DeLib](https://www.npmjs.com/package/delib), a non-restrictive and fully-inclusive Ethereum library:
 - A Command Line Interface that allows creation of IPC and RPC connections
 - Ethereum smart contract compile, build, and deployment functionality
 - Promise-based architecture to abstract away the asynchronicity present while using Ethereum
-- Testing environment (through simple [Tape](https://github.com/substack/tape) Promises)
 
 # Setup
 
 ## Dependency Installation
-In order to use the capabilities of DeStore, we must first [install IPFS](https://ipfs.io/docs/install) and [install geth](https://www.ethereum.org/cli#geth). Please follow the links to complete each respective download before starting the app.
+In order to use the capabilities of DeStore, we must first [install IPFS](https://ipfs.io/docs/install) and [install geth](https://www.ethereum.org/cli#geth). Please follow the links to complete each download and have them running on your computer before starting the app.
+They must be running on their default configurations for DeStore to connect to.
 
 ## Package Installation
 
 `npm install` to install all npm dependencies.
 
 `npm start` to initialize the electron application.
-
-
-
-
 
 # Application Overview
 

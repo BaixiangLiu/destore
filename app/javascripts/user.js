@@ -14,7 +14,6 @@ const Sender = nodeRequire('./sender/sender.js');
 const get_elapsed_time_string = nodeRequire('./utils/timeString.js');
 //Initializes daemon when on page
 IPFS.init();
-IPFS.daemon();
 
 //TESTING
 configuration.contracts.deStore = DeStoreAddress.get();
