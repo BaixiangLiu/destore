@@ -29,6 +29,10 @@ body {
   font-size: 45px;
 }
 
+.container-fluid {
+  min-width: 1000px;
+}
+
 .file {
   position: relative;
   height: 40px;
@@ -222,7 +226,6 @@ body {
   background: #c91841;
   padding: 0 20px;
   opacity: 0.8;
-
 }
 
 .distribute:hover {

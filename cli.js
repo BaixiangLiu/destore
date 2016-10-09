@@ -135,9 +135,19 @@ if (program.testrpc) {
 
       return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
-    .then(arr => {
-      console.log('Receiver Accounts');
-      console.log(arr);
+    .then(tx => {
+      Ethereum.changeAccount(5);
+      console.log(Ethereum.account);
+
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(6);
+      console.log(Ethereum.account);
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+    })
+    .then(tx => {
+
     })
     .catch(err => {
       console.error(err);

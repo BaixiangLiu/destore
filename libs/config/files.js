@@ -10,6 +10,9 @@ const user = __dirname + './../user/'; // path to application user directory
 // storage - files backup
 // host - where the files are downloaded for the host
 
+/**
+ * Download, upload, host, and decrypt are referenced from the files location. To refactor later have them all point to the exact path
+ */
 const filesConfig = {
   files: __dirname + '/../../files/',
   download: '/download/encrypted/',
