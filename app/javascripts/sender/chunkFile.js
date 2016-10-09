@@ -1,6 +1,6 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
-const Upload = require('./../../../models/Upload.js');
+const UploadDB = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
 const IPFS = require('./../../../libs/ipfs/ipfs.js');
 
@@ -10,6 +10,7 @@ const IPFS = require('./../../../libs/ipfs/ipfs.js');
 * @returns {Promise} - the DAGLink objects returned from ipfs. {name: String, size: Number, hash: base58 Buffer, hashAddress: String}
 **/
 module.exports = promisify((fileName, callback) => {
+  const Upload = new UploadDB(Ethereum.account);
   Upload.db.findOne({account: Ethereum.account, fileName: fileName}, (err, doc) => {
     if (err || doc === null) {
       callback(err, doc);

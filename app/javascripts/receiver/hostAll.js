@@ -1,7 +1,7 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
 const IPFS = require('./../../../libs/ipfs/ipfs.js');
-const Host = require('./../../../models/Host.js');
+const HostDB = require('./../../../models/Host.js');
 const promisify = require('es6-promisify');
 const config = require('./../../../libs/config/config.js');
 const path = require('path');
@@ -11,6 +11,7 @@ const path = require('path');
 * @returns {Promise} - an array of docs updated in Host.db
 **/
 module.exports = promisify((callback) => {
+  const Host = new HostDB(Ethereum.account);
   Host.db.find({account: Ethereum.account, isHosted: false}, (err, docs) => {
     if (err || docs.length === 0) {
       // this error was bad. it doesnt need to here

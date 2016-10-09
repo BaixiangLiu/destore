@@ -1,6 +1,6 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
-const Upload = require('./../../../models/Upload.js');
+const UploadDB = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
 const IPFS = require('./../../../libs/ipfs/ipfs.js');
 const path = require('path');
@@ -12,6 +12,7 @@ const config = require('./../../../libs/config/config.js');
 * @returns {Promise} - location of where file was saved
 **/
 module.exports = promisify((fileName, callback) => {
+  const Upload = new UploadDB(Ethereum.account);
   Upload.db.findOne({account: Ethereum.account, fileName: fileName}, (err, doc) => {
     if (err || doc === null) {
       callback(new Error('File was not found'), null);

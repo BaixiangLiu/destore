@@ -1,10 +1,7 @@
 'use strict';
 const DataStore = require('nedb');
-
-const Host = new DataStore({
-  filename: __dirname + '/../data/host.db',
-  autoload: true
-});
+const path = require('path');
+const fs = require('fs-extra');
 
 const Schema = {
   fileSize: null,
@@ -15,15 +12,32 @@ const Schema = {
   hostTime: null
 };
 
-Host.ensureIndex({ fieldName: 'hashAddress', unique: true, sparse: true }, err => {
-  if (err) console.error(err);
-});
+const dbCache = {};
 
-module.exports = {
-  db: Host,
-  reset: () => {
-    Host.remove({}, { multi: true }, (err, numRemoved) => {
+function HostDB(address) {
+  const dbFolder = path.join(__dirname, '/../data/', address);
+  const dbPath = path.join(__dirname, '/../data/', address, 'host.db');
+  fs.ensureDirSync(dbFolder);
+  if (!dbCache[address]) {
+    const Host = new DataStore({
+      filename: dbPath,
+      autoload: true
+    });
+    Host.ensureIndex({ fieldName: 'hashAddress', unique: true, sparse: true }, err => {
+      if (err) console.error(err);
+    });
+    dbCache[address] = Host;
+    this.db = Host;
+  } else {
+    this.db = dbCache[address];
+  }
+
+  this.reset = () => {
+    this.db.remove({}, { multi: true }, (err, numRemoved) => {
+      console.log('num removed', numRemoved);
       if (err) throw err;
     });
-  }
-};
+  };
+}
+
+module.exports = HostDB;

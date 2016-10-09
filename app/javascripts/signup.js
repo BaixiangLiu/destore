@@ -54,7 +54,6 @@ $(document).ready(function() {
     }
   });
 
-
   $('.form-signin').submit(function(e) {
     e.preventDefault();
     var userID = $(this).find('.login-address').val();

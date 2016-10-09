@@ -19,6 +19,8 @@ IPFS.daemon();
 //TESTING
 configuration.contracts.deStore = DeStoreAddress.get();
 Ethereum.changeAccount(config.get('user.accountIndex'));
+console.log(Ethereum.account);
+
 $('#accountID').html(Ethereum.account);
 
 updateTotalCost();

@@ -1,7 +1,7 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
 const IPFS = require('./../../../libs/ipfs/ipfs.js');
-const Upload = require('./../../../models/Upload.js');
+const UploadDB = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
 const fs = require('fs');
 const path = require('path');
@@ -13,6 +13,7 @@ const path = require('path');
  * @returns Promise - res is an Object of the doc added to nedb
  **/
 module.exports = promisify((filePath, value, callback) => {
+  const Upload = new UploadDB(Ethereum.account);
   value = Number(value);
   const fileName = path.basename(filePath);
   let fileSize;

@@ -1,7 +1,7 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
 const IPFS = require('./../../../libs/ipfs/ipfs.js');
-const Host = require('./../../../models/Host.js');
+const HostDB = require('./../../../models/Host.js');
 const promisify = require('es6-promisify');
 const config = require('./../../../libs/config/config.js');
 const path = require('path');
@@ -13,6 +13,7 @@ const fs = require('fs');
 * @returns {Promise} - response contains the path of the file that was deleted
 **/
 module.exports = promisify((hashAddress, callback) => {
+  const Host = new HostDB(Ethereum.account);
   Host.db.findOne({account: Ethereum.account, hashAddress: hashAddress}, (err, doc) => {
     if (err || doc === null) {
       callback(new Error('File not found'), null);

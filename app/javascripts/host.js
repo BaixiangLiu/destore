@@ -20,7 +20,7 @@ IPFS.daemon();
 configuration.contracts.deStore = DeStoreAddress.get();
 
 Ethereum.changeAccount(config.get('user.accountIndex'));
-
+console.log(Ethereum.account);
 //Makes encrypt/download folder (hidden) if not made
 
 const fileIpfsArray = config.get('fileList.address');

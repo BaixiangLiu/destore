@@ -32,6 +32,7 @@ class Ethereum {
       value: 0,
       gas: 4000000
     };
+    this.init();
   }
 
   /**

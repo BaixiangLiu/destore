@@ -1,6 +1,6 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
-const Upload = require('./../../../models/Upload.js');
+const UploadDB = require('./../../../models/Upload.js');
 const promisify = require('es6-promisify');
 
 /**
@@ -9,8 +9,8 @@ const promisify = require('es6-promisify');
 * @return {Number} - remaining ether balance
 **/
 module.exports = promisify((fileName, callback) => {
+  const Upload = new UploadDB(Ethereum.account);
   const options = Ethereum.defaults;
-
   Upload.db.findOne({account: Ethereum.account, fileName: fileName}, (err, doc) => {
     if (err || doc === null) {
       callback(new Error('File name not found'), null);

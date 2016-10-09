@@ -1,6 +1,6 @@
 'use strict';
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
-const Host = require('./../../../models/Host.js');
+const HostDB = require('./../../../models/Host.js');
 const promisfy = require('es6-promisify');
 
 /**
@@ -8,6 +8,7 @@ const promisfy = require('es6-promisify');
 * @return {Array} - balance in Ether of receiver balance and total balance
 **/
 module.exports = promisfy((callback) => {
+  const Host = new HostDB(Ethereum.account);
   let withdrawAmount;
   const options = Ethereum.defaults;
 

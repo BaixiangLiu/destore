@@ -19,16 +19,17 @@ const test = tapes(tape);
 
 const lol = console.log.bind(console);
 
-const Upload = require('./../models/Upload.js');
-const Host = require('./../models/Host.js');
+// const Upload = require('./../models/Upload.js');
+// const Host = require('./../models/Host.js');
+
 const Sender = require('./../app/javascripts/sender/sender.js');
 const Receiver = require('./../app/javascripts/receiver/receiver.js');
 
 const web3 = Ethereum.init();
-IPFS.init();
 
-Upload.reset();
-Host.reset();
+IPFS.init();
+// Upload.reset();
+// Host.reset();
 
 test('Deploying new DeStore contract and adding a sender and receiver', t => {
   Ethereum.changeAccount(0);

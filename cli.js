@@ -1,8 +1,8 @@
 'use strict';
 const program = require('commander');
 const Ethereum = require('./libs/ethereum/ethereum.js');
-const Upload = require('./models/Upload.js');
-const Host = require('./models/Host.js');
+const UploadDB = require('./models/Upload.js');
+const HostDB = require('./models/Host.js');
 const DeStoreAddress = require('./models/DeStoreAddress.js');
 const config = require('./libs/config/config.js');
 
@@ -26,8 +26,14 @@ if (program.build) {
 
 if (program.test) {
   Ethereum.init();
-  Upload.reset();
-  Host.reset();
+  let Upload;
+  let Host;
+  for (let i = 0; i < 7; i++) {
+    Upload = new UploadDB(Ethereum.accounts[i]);
+    Upload.reset();
+    Host = new HostDB(Ethereum.accounts[i]);
+    Host.reset();
+  }
   Ethereum.changeAccount(0);
   const deployOptions = {
     from: Ethereum.account,
@@ -81,8 +87,14 @@ if (program.test) {
 
 if (program.testrpc) {
   Ethereum.init();
-  Upload.reset();
-  Host.reset();
+  let Upload;
+  let Host;
+  for (let i = 0; i < 5; i++) {
+    Upload = new UploadDB(Ethereum.accounts[i]);
+    Upload.reset();
+    Host = new HostDB(Ethereum.accounts[i]);
+    Host.reset();
+  }
   Ethereum.changeAccount(0);
   const deployOptions = {
     from: Ethereum.account,

@@ -273,7 +273,6 @@ contract DeStore {
     return true;
   }
 
-
   function senderAddFile(bytes23[2][] _hashes, bytes _fileName, uint _value, uint[] _sizes)
     senderStatus(msg.sender)
     senderFileNotExists(msg.sender, _fileName)

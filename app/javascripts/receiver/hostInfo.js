@@ -1,7 +1,7 @@
 'use strict';
 const IPFS = require('./../../../libs/ipfs/ipfs.js');
 const Ethereum = require('./../../../libs/ethereum/ethereum.js');
-const Host = require('./../../../models/Host.js');
+const HostDB = require('./../../../models/Host.js');
 const promisfy = require('es6-promisify');
 const nestedHexToAscii = require('./../../../libs/ethereum/nestedHexToAscii');
 
@@ -11,6 +11,7 @@ const nestedHexToAscii = require('./../../../libs/ethereum/nestedHexToAscii');
 * @returns Promise - Array of objects of the receivers hash and corresponding sender and size
 **/
 module.exports = promisfy((callback) => {
+  const Host = new HostDB(Ethereum.account);
   const options = Ethereum.defaults;
   const docs = []; // the result promise and callback return
   Promise.all([Ethereum.deStore().receiverGetHashes(options), Ethereum.deStore().receiverGetSenders(options), Ethereum.deStore().receiverGetSizes(options), Ethereum.deStore().receiverGetValues(options)])
