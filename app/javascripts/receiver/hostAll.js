@@ -5,6 +5,7 @@ const HostDB = require('./../../../models/Host.js');
 const promisify = require('es6-promisify');
 const config = require('./../../../libs/config/config.js');
 const path = require('path');
+const fs = require('fs-extra');
 
 /**
 * User goes thru Host db and looks for docs that have an isHosted of false and starts downloading them, after download pins files to ipfs node
@@ -16,7 +17,6 @@ module.exports = promisify((callback) => {
     if (err || docs.length === 0) {
       // this error was bad. it doesnt need to here
       // callback(new Error('Could not find a doc with isHosted of false'), null);
-      callback(null)
       return;
     }
     const hosted = []; // the hashes of the hosted files
@@ -25,7 +25,9 @@ module.exports = promisify((callback) => {
     const returnDocs = []; // docs to be returned
     for (let i = 0; i < docs.length; i++) {
       const hashAddress = docs[i].hashAddress;
-      const writePath = path.join(config.files.host, hashAddress);
+      fs.ensureDirSync(path.join(config.files.files, Ethereum.account));
+      fs.ensureDirSync(path.join(config.files.files, Ethereum.account, config.files.host));
+      const writePath = path.join(config.files.files, Ethereum.account, config.files.host, hashAddress);
       hosted.push(hashAddress);
       filePaths.push(writePath);
       promises.push(IPFS.download(hashAddress, writePath));

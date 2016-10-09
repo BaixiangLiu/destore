@@ -1,6 +1,7 @@
-var path = require('path');
-var zlib = require('zlib');
-var fs = require('fs');
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const path = require('path');
+const zlib = require('zlib');
+const fs = require('fs-extra');
 const crypto = require('crypto');
 const promisify = require('es6-promisify');
 const config = require('./../../../libs/config/config.js');
@@ -8,14 +9,19 @@ const config = require('./../../../libs/config/config.js');
 // start pipe
 // r.pipe(zip).pipe(encrypt).pipe(decrypt).pipe(unzip).pipe(w);
 module.exports = promisify((filePath, password, callback) => {
-  var start = fs.createReadStream(filePath);
+  console.log(filePath);
+  const start = fs.createReadStream(filePath);
   // zip content
-  var zip = zlib.createGzip();
+  const zip = zlib.createGzip();
   // encrypt content
-  var encrypt = crypto.createCipher('aes192', password);
+  const encrypt = crypto.createCipher('aes192', password);
   // write file
-  var encrpytedFilePath = config.files.upload  + path.basename(filePath);
-  var end = fs.createWriteStream(encrpytedFilePath);
+  fs.ensureDirSync(path.join(config.files.files, Ethereum.account));
+  fs.ensureDirSync(path.join(config.files.files, Ethereum.account, config.files.upload));
+  const fileName = path.basename(filePath);
+  let encrpytedFilePath = path.join(config.files.files, Ethereum.account, config.files.upload,  fileName);
+  console.log(encrpytedFilePath);
+  const end = fs.createWriteStream(encrpytedFilePath);
   encrpytedFilePath = path.normalize(encrpytedFilePath);
   //execute by piping
   start.on('error', function(err) {

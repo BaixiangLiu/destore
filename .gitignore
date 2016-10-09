@@ -2,10 +2,7 @@ node_modules
 .DS_Store
 npm-debug.log
 data/**
-files/upload/**
-files/download/**
-files/storage/**
-files/host/**
+files/**
 contracts-abi/**
 .node-xmlhttprequest**
 TODO
