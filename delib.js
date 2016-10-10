@@ -6,7 +6,7 @@ module.exports = {
   contracts: {
     path: './contracts/',
     built: './app/contracts/',
-    address: './data/'
+    address: './app/contracts/'
   },
 
   /* RPC connection options to geth node */

@@ -102,8 +102,6 @@ if (program.testrpc) {
     gasValue: 20000000000
   };
   const storage = 5 * 1024 * 1024 * 1024;
-
-  console.log(Ethereum.accounts);
   Ethereum.deploy('DeStore', [], deployOptions)
     .then(instance => {
       config.contracts.deStore = instance.address;
@@ -119,31 +117,42 @@ if (program.testrpc) {
     })
     .then(tx => {
       Ethereum.changeAccount(2);
-      console.log(Ethereum.account);
-
+      console.log('Receiver account: ', Ethereum.account);
       return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(3);
-      console.log(Ethereum.account);
-
+      console.log('Receiver account: ', Ethereum.account);
       return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(4);
-      console.log(Ethereum.account);
-
+      console.log('Receiver account: ', Ethereum.account);
       return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(5);
-      console.log(Ethereum.account);
-
+      console.log('Receiver account: ', Ethereum.account);
       return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
       Ethereum.changeAccount(6);
-      console.log(Ethereum.account);
+      console.log('Receiver account: ', Ethereum.account);
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(7);
+      console.log('Receiver account: ', Ethereum.account);
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(8);
+      console.log('Receiver account: ', Ethereum.account);
+      return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+    })
+    .then(tx => {
+      Ethereum.changeAccount(9);
+      console.log('Receiver account: ', Ethereum.account);
       return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
     })
     .then(tx => {
@@ -196,6 +205,13 @@ if (program.receivers) {
 }
 
 if (program.reset) {
-  Upload.reset();
-  Host.reset();
+  Ethereum.init();
+  let Upload;
+  let Host;
+  for (let i = 0; i < Ethereum.accounts.length; i++) {
+    Upload = new UploadDB(Ethereum.accounts[i]);
+    Upload.reset();
+    Host = new HostDB(Ethereum.accounts[i]);
+    Host.reset();
+  }
 }

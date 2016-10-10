@@ -13,6 +13,7 @@ module.exports = promisify((fileName, amount, callback) => {
   const Upload = new UploadDB(Ethereum.account);
   const options = Ethereum.defaults;
 
+  /** Recursive calls to senderGetFileHost so they process in seperate transactions */
   function recursive(amount) {
     if (amount === 0) {
       return finish();
@@ -27,8 +28,8 @@ module.exports = promisify((fileName, amount, callback) => {
       });
   }
 
+  /** Called after recursive calls are done  to update db */
   function finish() {
-
     Ethereum.deStore().senderGetFileHashes(fileName, options)
       .then(hexHashes => {
         const promises = [];
@@ -50,19 +51,6 @@ module.exports = promisify((fileName, amount, callback) => {
       .catch(err => {
         callback(err, null);
       });
-
-    // Ethereum.deStore().senderGetFileReceivers(fileName, options)
-    //   .then(addresses => {
-    //     Upload.db.update({account: Ethereum.account, fileName: fileName}, {$set: {receivers: addresses, isUploaded: true}}, (err, num) => {
-    //       if (err) callback(err, null);
-    //       else {
-    //         callback(null, addresses);
-    //       }
-    //     });
-    //   })
-    //   .catch(err => {
-    //     callback(err, null);
-    //   });
   }
 
   recursive(amount);

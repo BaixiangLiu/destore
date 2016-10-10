@@ -1,5 +1,5 @@
 'use strict';
-const pathway = __dirname + '/../data/DeStoreAddress';
+const pathway = __dirname + '/../app/contracts/DeStoreAddress';
 const fs = require('fs');
 
 module.exports = {

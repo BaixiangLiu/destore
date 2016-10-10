@@ -12,7 +12,6 @@ const Config = nodeRequire('electron-config');
 const config = new Config();
 const get_elapsed_time_string = nodeRequire('./utils/timeString.js');
 
-//Initializes daemon when on page
 IPFS.init();
 
 //TESTING
@@ -25,13 +24,38 @@ const fileIpfsArray = config.get('fileList.address');
 
 $(document).ready(function() {
   $('#accountID').html(Ethereum.account);
+  getStorageLimit();
+
+  /** Checks Contract and Account Balance (every minute) */
+  checkBalance();
+  contractBalance();
+  setInterval(function() {
+    checkBalance();
+    contractBalance();
+  }, 1000 * 60);
+
+  /** Downloads all files available in contract (every minute) */
+  hostAll();
+  setInterval(function() {
+    hostAll();
+  }, 1000 * 60);
+
+  //1 second Interval for Timer
+  var elapsed_seconds = 0;
+  setInterval(function() {
+    elapsed_seconds = elapsed_seconds + 1;
+    $('#dash__time__timer ').text(get_elapsed_time_string(elapsed_seconds));
+  }, 1000);
+
+
+  /** ##### EVENT HANDLERS ##### */
 
   $(document).on('click', '.signOut', () => {
     config.clear('startup');
     window.location = '../html/signup.html';
   });
 
-  //display signin information
+  /** display signin information */
   $('.question').on({
     mouseenter: function() {
       console.log($(this).data('help'));
@@ -42,7 +66,7 @@ $(document).ready(function() {
     }
   });
 
-  //withdraws all the money in the smart contract
+  /** withdraws all the money in the smart contract */
   $('body').on('click', '.withdraw', function() {
     withdrawAll();
   });
@@ -84,36 +108,14 @@ $(document).ready(function() {
           isChangePending = false;
         });
     }
-    // insert input box into total storage value
-    // another click on change storage button will change the input
-    // needs to be greater than amount hosted
-    // sends the limit to the contract
   });
-
-  //1 second Interval for Timer
-  var elapsed_seconds = 0;
-  setInterval(function() {
-    elapsed_seconds = elapsed_seconds + 1;
-    $('#dash__time__timer ').text(get_elapsed_time_string(elapsed_seconds));
-  }, 1000);
-
-  //Checks Contract and Account Balance (every minute)
-  checkBalance();
-  contractBalance();
-  setInterval(function() {
-    checkBalance();
-    contractBalance();
-  }, 1000 * 60);
-
-  //Downloads all files available in contract (every minute)
-  hostAll();
-  setInterval(function() {
-    hostAll();
-  }, 1000 * 60);
 
   $('body').on('click', '.hostAll', function() {
     hostAll();
   });
+
+
+  /** ##### FUNCTIONS ##### */
 
   function checkBalance () {
     const balance = Ethereum.getBalanceEther().toFixed(3) || 0;
@@ -124,10 +126,7 @@ $(document).ready(function() {
   * Calls Host db, gets the storage used by all the files, then adds it to storage size
   **/
   function updateHostInfos() {
-    Receiver.hostInfo()
-      .then(docs => {
-        return Receiver.listHostDb();
-      })
+    Receiver.listHostDb()
       .then(docs => {
         console.log(docs);
         let storageSize = 0;
@@ -143,6 +142,7 @@ $(document).ready(function() {
           $('.dash__storage__hashes').append(hashAddress + '<br>');
         }
         storageSize = bytesMag(storageSize);
+        console.log(storageSize);
         $('.dash__storage__size__num').text(storageSize);
       })
       .catch(err => {
@@ -184,7 +184,10 @@ $(document).ready(function() {
   }
 
   function hostAll() {
-    Receiver.hostAll()
+    Receiver.hostInfo()
+      .then(docs => {
+        return Receiver.hostAll();
+      })
       .then(docs => {
         updateHostInfos();
       })
@@ -193,13 +196,14 @@ $(document).ready(function() {
       });
   }
 
-  // Run on page initialization
-  Ethereum.deStore().receiverGetStorage({from: Ethereum.account})
-    .then(amount => {
-      amount = bytesMag(amount);
-      $('.dash__total__storage__value').text(amount);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  function getStorageLimit() {
+    Ethereum.deStore().receiverGetStorage({from: Ethereum.account})
+      .then(amount => {
+        amount = bytesMag(amount);
+        $('.dash__total__storage__value').text(amount);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
 });
