@@ -307,7 +307,8 @@ contract DeStore {
   * Gets hosts for every hash in the file
   *
   **/
-  function senderGetFileHost(bytes _fileName, uint _amount)
+
+  function senderGetFileHost(bytes _fileName)
     senderStatus(msg.sender)
     senderFileExists(msg.sender, _fileName)
     public
@@ -315,30 +316,24 @@ contract DeStore {
     File memory file = senders[msg.sender].files[_fileName];
     uint j = receiverIndex;
     for (uint g = 0; g < file.sizes.length; g++) {
-      uint i = 1;
-      while (i <= _amount) {
-        if (file.sizes[g] < receivers[availReceivers[j]].availStorage && msg.sender != availReceivers[j]) {
-          i++;
-          receivers[availReceivers[j]].senders.push(msg.sender);
-          receivers[availReceivers[j]].hashes.push(file.hashes[g]);
-          receivers[availReceivers[j]].sizes.push(file.sizes[g]);
-          receivers[availReceivers[j]].values.push(file.value);
-          /*receivers[availReceivers[j]].fullHashes.push(file.fullHashes[g]);*/
-          receivers[availReceivers[j]].timesPaid.push(0); // timesPaid for files is initially at 0
-          receivers[availReceivers[j]].fileIndexes[addHashes(file.hashes[g][0], file.hashes[g][1])] = receivers[availReceivers[j]].hashes.length - 1;
-          receivers[availReceivers[j]].availStorage -= file.sizes[g];
-
-          /*senders[msg.sender].files[_fileName].receivers[g].push(availReceivers[j]); init// was not able to use memory file*/
-          // need to verifiy this reciever list
-          senders[msg.sender].files[_fileName].receivers.push(availReceivers[j]);
-
-        }
-        j++;
-        if (j >= availReceivers.length) {
-          j = 0;
-        } else if (j == receiverIndex) {
-          break;
-        }
+      if (file.sizes[g] < receivers[availReceivers[j]].availStorage && msg.sender != availReceivers[j]) {
+        receivers[availReceivers[j]].senders.push(msg.sender);
+        receivers[availReceivers[j]].hashes.push(file.hashes[g]);
+        receivers[availReceivers[j]].sizes.push(file.sizes[g]);
+        receivers[availReceivers[j]].values.push(file.value);
+        /*receivers[availReceivers[j]].fullHashes.push(file.fullHashes[g]);*/
+        receivers[availReceivers[j]].timesPaid.push(0); // timesPaid for files is initially at 0
+        receivers[availReceivers[j]].fileIndexes[addHashes(file.hashes[g][0], file.hashes[g][1])] = receivers[availReceivers[j]].hashes.length - 1;
+        receivers[availReceivers[j]].availStorage -= file.sizes[g];
+        /*senders[msg.sender].files[_fileName].receivers[g].push(availReceivers[j]); init// was not able to use memory file*/
+        // need to verifiy this reciever list
+        senders[msg.sender].files[_fileName].receivers.push(availReceivers[j]);
+      }
+      j++;
+      if (j >= availReceivers.length) {
+        j = 0;
+      } else if (j == receiverIndex) {
+        break;
       }
     }
 
@@ -437,18 +432,16 @@ contract DeStore {
   }*/
 
   /**
- * Combines two hashes and returns the byte representation
- */
+   * Combines two hashes and returns the byte representation
+   */
   function addHashes(bytes23 _hash1, bytes23 _hash2) returns (bytes) {
-    string memory resString = new string(_hash1.length + _hash2.length);
-    bytes memory res = bytes(resString);
+    /*string memory resString = new string(_hash1.length + _hash2.length);*/
+    bytes memory res = new bytes(46);
     uint k = 0;
+    uint m = 23;
     for (uint i = 0; i < _hash1.length; i++) {
       res[k++] = _hash1[i];
-    }
-
-    for (uint j = 0; j < _hash2.length; j++) {
-      res[k++] = _hash2[j];
+      res[m++]= _hash2[i];
     }
     return res;
   }

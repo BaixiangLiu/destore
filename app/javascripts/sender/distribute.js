@@ -12,19 +12,39 @@ const promisify = require('es6-promisify');
 module.exports = promisify((fileName, amount, callback) => {
   const Upload = new UploadDB(Ethereum.account);
   const options = Ethereum.defaults;
-  Ethereum.deStore().senderGetFileHost(fileName, amount, options)
-    .then(tx => {
-      return Ethereum.deStore().senderGetFileReceivers(fileName, options);
-    })
-    .then(addresses => {
-      Upload.db.update({account: Ethereum.account, fileName: fileName}, {$set: {receivers: addresses, isUploaded: true}}, (err, num) => {
-        if (err) callback(err, null);
-        else {
-          callback(null, addresses);
-        }
+
+  function recursive(amount) {
+    if (amount === 0) {
+      return finish();
+    }
+    Ethereum.deStore().senderGetFileHost(fileName, options)
+      .then(tx => {
+        console.log('recursive');
+        recursive(--amount);
+      })
+      .catch(err => {
+        callback(err, null);
       });
-    })
-    .catch(err => {
-      callback(err);
-    });
+  }
+
+  function finish() {
+    Ethereum.deStore().senderGetFileHost(fileName, options)
+      .then(tx => {
+        return Ethereum.deStore().senderGetFileReceivers(fileName, options);
+      })
+      .then(addresses => {
+        Upload.db.update({account: Ethereum.account, fileName: fileName}, {$set: {receivers: addresses, isUploaded: true}}, (err, num) => {
+          if (err) callback(err, null);
+          else {
+            callback(null, addresses);
+          }
+        });
+      })
+      .catch(err => {
+        callback(err, null);
+      });
+  }
+
+  recursive(amount);
+
 });
