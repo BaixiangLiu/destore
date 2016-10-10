@@ -17,7 +17,12 @@ let mainWindow;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1200, height: 750});
+  mainWindow = new BrowserWindow({
+    width: 1100,
+    minWidth: 1100,
+    height: 800,
+    minHeight: 800
+  });
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/html/signup.html`);
@@ -33,6 +38,9 @@ function createWindow () {
     mainWindow = null;
   });
 }
+
+config.delete('user');
+config.delete('store');
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

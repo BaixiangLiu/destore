@@ -22,45 +22,43 @@
         <span style="float: left; font-weight: 700; font-size: 30px">Host
         </span>Account ID: <span id="accountID"></span>
     </div>
-
-    <div id="dash" class="shadow grid2x2">
-
-      <div class="dash__box dash__balance">
-        <div class="dash__balance__title dash__title">Account Ether Balance </div>
-        <div id="dash__balance__value" class="dash__display"></div>
-        <div class="dash__balance__contract__title dash__title">Contract Balance: </div>
-        <div id="dash__balance__contract__value" class="dash__display"></div>
-        <div>
-          <button class="btn btn-danger withdraw">Transfer to Account</button>
-        </div>
-      </div>
-
-      <div class="dash__box dash__storage">
-        <div class="dash__storage__size">
-          <div class="dash__storage__size__title dash__title">Amount Hosted </div>
-          <div class="dash__storage__size__num dash__display"></div>
-          <div class="dash__total__storage__title">Storage Limit: </div>
-          <div class="dash__total__storage__value"></div>
-          <div class="dash__change__storage">
-            <button class="btn btn-danger dash__change__storage__button">Change Storage Limit</button>
+    <div id="dash-wrap">
+      <div id="dash" class="shadow grid2x2">
+        <div class="dash__box dash__balance">
+          <div class="dash__balance__title dash__title">Account Ether Balance </div>
+          <div id="dash__balance__value" class="dash__display"></div>
+          <div class="dash__balance__contract__title dash__title">Contract Balance: </div>
+          <div id="dash__balance__contract__value" class="dash__display"></div>
+          <div>
+            <button class="btn btn-danger withdraw">Transfer to Account</button>
           </div>
         </div>
-      </div>
 
-      <div class="dash__box dash__time">
-        <div class="dash__time__title dash__title">Uptime:</div>
-        <div id="dash__time__timer" class="dash__display">00:00:00</div>
-      </div>
+        <div class="dash__box dash__storage">
+          <div class="dash__storage__size">
+            <div class="dash__storage__size__title dash__title">Amount Hosted </div>
+            <div class="dash__storage__size__num dash__display"></div>
+            <div class="dash__total__storage__title"><span>Storage Limit:</span></div>
+            <div class="dash__total__storage__value"></div>
+            <div class="dash__change__storage">
+              <button class="btn btn-danger dash__change__storage__button">Add Storage</button>
+            </div>
+          </div>
+        </div>
 
-      <div class="dash__box dash__hashes">
-        <div class="dash__hashes__title dash__title">Stored Files: </div>
-        <div class="dash__storage__hashes"></div>
-        <div class="centerAbs"><button type="button" class="hostAll  btn btn-primary">Download Available Files </button></div>
-      </div>
+        <div class="dash__box dash__time">
+          <div class="dash__time__title dash__title">Uptime:</div>
+          <div id="dash__time__timer" class="dash__display">00:00:00</div>
+        </div>
 
-    </div> <!-- 2x2 Grid -->
+        <div class="dash__box dash__hashes">
+          <div class="dash__hashes__title dash__title">Stored Files: </div>
+          <div class="dash__storage__hashes"></div>
+          <div class="centerAbs"><button type="button" class="hostAll  btn btn-primary">Download Available Files </button></div>
+        </div>
+      </div> <!-- 2x2 Grid -->
       <button class="btn btn-danger signOut">Sign Out</button>
-    </div> <!-- HOST -->
+    </div>
   </body>
   <script>
     nodeRequire('../javascripts/host.js');

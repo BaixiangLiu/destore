@@ -17,6 +17,12 @@ header {
   font-weight: 700;
 }
 
+#dash-wrap {
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #dash {
   background-color: #BBC1E6;
   position: relative;
@@ -143,10 +149,12 @@ header {
 
 .grid2x2 {
   min-height: 100%;
-  min-width: 1000px;
+  width: 900px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
 }
 .grid2x2 > div {
   display: flex;
@@ -199,6 +207,9 @@ header {
   height: 50px;
   line-height: 50px;
   padding-left: 10px;
+  width: 900px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 h1 {

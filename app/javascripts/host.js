@@ -66,7 +66,7 @@ $(document).ready(function() {
       storageValue = storageValue * 1024 * 1024 * 1024;
       console.log(storageValue);
       $(this).attr('disabled', true);
-      Ethereum.deStore().receiverChangeStorage(storageValue)
+      Ethereum.deStore().receiverAddStorage(storageValue)
         .then(tx => {
           console.log('tx for change storage went thru');
           return Ethereum.deStore().receiverGetStorage();

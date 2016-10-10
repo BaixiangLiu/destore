@@ -89,6 +89,7 @@ contract DeStore {
     /*bytes[] fullHashes;*/
     /*mapping (uint => address[]) receivers;*/
     address[] receivers;
+    mapping (uint => address[]) hashReceivers;
     uint value; // amount this file is worth per byte
     bool exists;
   }
@@ -205,18 +206,18 @@ contract DeStore {
     return receivers[msg.sender].fileNames;
   }*/
 
-  function receiverAddStorage(uint kilobytes)
+  function receiverAddStorage(uint _bytes)
     external
     receiverStatus(msg.sender)
   {
-    receivers[msg.sender].availStorage += kilobytes;
+    receivers[msg.sender].availStorage += _bytes;
   }
 
-  function receiverChangeStorage(uint kilobytes)
+  function receiverChangeStorage(uint _bytes)
     external
     receiverStatus(msg.sender)
   {
-    receivers[msg.sender].availStorage = kilobytes;
+    receivers[msg.sender].availStorage = _bytes;
   }
 
   function receiverGetStorage()
@@ -328,6 +329,7 @@ contract DeStore {
         /*senders[msg.sender].files[_fileName].receivers[g].push(availReceivers[j]); init// was not able to use memory file*/
         // need to verifiy this reciever list
         senders[msg.sender].files[_fileName].receivers.push(availReceivers[j]);
+        senders[msg.sender].files[_fileName].hashReceivers[g].push(availReceivers[j]);
       }
       j++;
       if (j >= availReceivers.length) {
@@ -361,6 +363,15 @@ contract DeStore {
     returns (address[])
   {
     return senders[msg.sender].files[_fileName].receivers;
+  }
+
+  function senderGetFileHashReceivers(bytes _fileName, uint _index)
+    senderStatus(msg.sender)
+    senderFileExists(msg.sender, _fileName)
+    constant
+    returns (address[])
+  {
+    return senders[msg.sender].files[_fileName].hashReceivers[_index];
   }
 
   function senderSendMoney(address _receiver, bytes _fileName)

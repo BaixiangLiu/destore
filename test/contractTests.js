@@ -506,6 +506,18 @@ test('DeStore ===', t => {
       })
       .then(senders => {
         t.equal(senders[0], Ethereum.account, 'Expect senders from receiverGetSenders to be correct');
+
+        return DeStore.receiverGetHashes({from: Ethereum.accounts[1]});
+      })
+      .then(hexHashes => {
+        const hashes = helper.getAllHashes(hexHashes);
+        // console.log(hashes);
+        const splitArr = helper.hashesIntoSplitArr(hashes[4]);
+        console.log(splitArr);
+        return DeStore.receiverGetFileIndex(Ethereum.accounts[1], splitArr[0][0], splitArr[0][1]);
+      })
+      .then(index => {
+        t.equal(index.c[0], 4, 'Expect receiver file index to equal 4');
         t.end();
       })
       .catch(err => {
@@ -535,7 +547,6 @@ test('DeStore ===', t => {
 
   t.test('Check to see that the recieverIndex works' , t => {
     const inputHash = 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67RINDEX';
-
     DeStore.senderAdd()
       .then(tx => {
         return Promise.all([
@@ -612,13 +623,13 @@ test('DeStore ===', t => {
         const hashes3 = helper.getAllHashes(hexArrArr[2]);
         const hashes4 = helper.getAllHashes(hexArrArr[3]);
         const hashes5 = helper.getAllHashes(hexArrArr[4]);
-
         t.equal(hashes1.length, 2, 'Expect receiver 1 to return a hash array of length 2');
         t.equal(hashes2.length, 2, 'Expect receiver 2 to return a hash array of length 2');
         t.equal(hashes3.length, 1, 'Expect receiver 3 to return a hash array of length 1');
         t.equal(hashes1[0], inputHash, 'Expect receiver 1 to return the input hash');
         t.end();
       })
+
       .catch(err => {
         console.error(err);
         t.fail();

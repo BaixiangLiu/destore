@@ -52,12 +52,15 @@ a:focus {
 .tab {
   height: 250px;
   overflow: hidden;
+  position: relative;
+
 }
 
 .tabs {
   width:40%;
   display:inline-block;
   border-radius: 3px;
+  min-width: 590px;
 }
 
 .accounts {
@@ -148,6 +151,7 @@ li.active a {
   font-size: 20px;
   overflow: hidden;
   padding: 20px;
+  margin: auto;
 }
 
 .form-signin {
@@ -155,6 +159,7 @@ li.active a {
   font-size: 20px;
   overflow: hidden;
   padding: 20px;
+  margin: auto;
 }
 
 .input {
@@ -162,9 +167,12 @@ li.active a {
   outline: 0;
   background: transparent;
   border-bottom: 2px solid black;
-  width: 33%;
+  width: 36%;
   font-size: 23px;
   margin-bottom: 2.5%;
+  margin-right: auto;
+  margin-left: auto;
+  min-width: 500px;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
