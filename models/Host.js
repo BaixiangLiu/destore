@@ -34,7 +34,6 @@ function HostDB(address) {
 
   this.reset = () => {
     this.db.remove({}, { multi: true }, (err, numRemoved) => {
-      console.log('num removed', numRemoved);
       if (err) throw err;
     });
   };

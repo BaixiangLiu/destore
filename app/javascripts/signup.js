@@ -71,7 +71,8 @@ $(document).ready(function() {
       }
       config.set('user', {
         path: userType,
-        accountIndex: accountIndex
+        accountIndex: accountIndex,
+        password: userPass // this is for encrypting and decrypting files
       });
       window.location = `../html/${userType}.html`;
     }
@@ -92,7 +93,8 @@ $(document).ready(function() {
             console.log('Correct password');
             config.set('user', {
               path: userType,
-              accountIndex: accountIndex
+              accountIndex: accountIndex,
+              password: userPass
             });
             Ethereum.changeAccount(accountIndex);
             let currentBalance = Ethereum.getBalanceEther().toFixed(3);

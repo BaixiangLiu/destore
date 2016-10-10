@@ -58,12 +58,6 @@ function UploadDB(address) {
       if (err) throw err;
     });
   };
-
-  /**
-   * Change the db into a specific Ethereum account's db
-   */
-
-
 }
 
 module.exports = UploadDB;

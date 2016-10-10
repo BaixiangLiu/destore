@@ -98,7 +98,7 @@ $('.upload-drop-zone').on('drop', (ev) => {
   var filePath = ev.originalEvent.dataTransfer.files[0].path;
   var fileSize = Sender.filesize(filePath);
 
-  Sender.encrypt(filePath, 'hello')
+  Sender.encrypt(filePath, config.get('user.password'))
     .then((encrpytedFilePath) => {
       console.log(encrpytedFilePath);
       const newFileName = path.basename(encrpytedFilePath);
@@ -203,7 +203,7 @@ $('body').on('click', '.retrieve', function() {
   Sender.retrieveFile(fileName)
     .then((writePath) => {
       console.log(fileName, 'written to ', writePath);
-      return Sender.decrypt(writePath, 'hello');
+      return Sender.decrypt(writePath, config.get('user.password'));
     })
     .then(writePath => {
       $(this).attr('disabled', false);
