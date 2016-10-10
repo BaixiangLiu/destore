@@ -2,7 +2,9 @@ node_modules
 .DS_Store
 npm-debug.log
 data/**
+!data/holder
 files/**
+!files/holder
 contracts-abi/**
 .node-xmlhttprequest**
 TODO
