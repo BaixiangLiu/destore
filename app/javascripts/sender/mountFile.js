@@ -31,8 +31,8 @@ module.exports = promisify((filePath, value, callback) => {
         fileSize: fileSize,
         hashAddress: hashArr[0].hash, // the main hash
         value: value, // amount to send hosts
-        blocks: [], // hashes to the blocks
-        blockSizes: [],
+        blocks: [hashArr[0].hash], // hashes to the blocks
+        blockSizes: [fileSize],
         receivers: [],
         uploadTime: new Date(),
         isMounted: true,

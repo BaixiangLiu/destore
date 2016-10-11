@@ -10,6 +10,7 @@
     "start": "electron ./app/main.js",
     "test-app": "node ./test/appTests.js",
     "test-contract": "node ./test/contractTests.js",
+    "test-contract2": "node ./test/contractTests2.js",
     "init-testrpc": "node cli testrpc",
     "init-dev": "node cli test",
     "build-contract": "node cli build",

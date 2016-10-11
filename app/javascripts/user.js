@@ -144,10 +144,9 @@ $('body').on('click', '.mount', function() {
   var fileSize;
   console.log(filePath);
   Sender.mountFile(filePath, fileValue)
-    .then((doc) => {
-      console.log(doc);
+    .then(doc => {
       fileSize = doc.fileSize;
-      return Sender.uploadDeStore(doc.fileName);
+      return Sender.uploadDeStore(fileName);
     })
     .then((hashes) => {
       console.log(hashes);
@@ -173,7 +172,7 @@ $('body').on('click', '.distribute', function() {
   var fileName = path.basename($(this).closest('.file').data('filepath'));
   var userNum = $(this).closest('.file').find('.recNum').val() || 3;
   console.log(userNum);
-  Sender.distribute(fileName, userNum)
+  Sender.distribute2(fileName, userNum)
     .then((res) => {
       console.log(res);
       $(this).closest('.file').find('.recNum').remove();
@@ -187,7 +186,7 @@ $('body').on('click', '.distribute', function() {
       `);
       updateTotalCost();
       console.log(fileName);
-      return Sender.payFile(fileName);
+      return Sender.payFile2(fileName);
     })
     .then(balance => {
       $('#balance').text(balance.toFixed(3));
@@ -217,7 +216,7 @@ $('body').on('click', '.retrieve', function() {
 // not being used anymore but could be used later 09/14/2016
 $('body').on('click', '.pay', function() {
   const fileName = path.basename($(this).closest('.file').data('filepath'));
-  Sender.payFile(fileName)
+  Sender.payFile2(fileName)
     .then(balance => {
       $('#balance').text(balance.toFixed(3));
     })

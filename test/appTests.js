@@ -234,6 +234,22 @@ test('Testing retrieveFile', t => {
       t.fail();
     });
 });
+
+test('Testing hostInfo for files paid info', t => {
+  Ethereum.changeAccount(1);
+  Receiver.hostInfo()
+    .then(infos => {
+      console.log(infos[0]);
+      // t.equal(infos[0].hashAddress, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS', 'Expect hashAddress of 1st link to equal 1st link of added file');
+      // t.equal(infos[0].senderAddress, Ethereum.accounts[0], 'Expect Ethereum account to equal account used to send file');
+      t.end();
+    })
+    .catch(err => {
+      console.error(err);
+      t.fail();
+    });
+});
+
 // test('Deploying new DeStore contract', t => {
 //   Ethereum.changeAccount(0);
 //   const deployOptions = {

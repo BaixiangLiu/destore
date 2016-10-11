@@ -1,8 +1,4 @@
 'use strict';
-/*
-IMPORTANT: testrpc must be running during these tests,
-at least for now. 8/25/2016 4:48pm
-*/
 
 const tape = require('tape');
 const tapes = require('tapes');
@@ -128,6 +124,79 @@ test('DeStore ===', t => {
         })
         .catch(err => {
           t.fail();
+        });
+    });
+  }
+
+  function reDeployWithReceivers() {
+    t.test('Deploying new DeStore contract with receivers', t => {
+      Ethereum.changeAccount(0);
+      const deployOptions = {
+        from: Ethereum.account,
+        gas: 4000000,
+        gasValue: 20000000000
+      };
+      const storage = 5 * 1024 * 1024 * 1024;
+      Ethereum.deploy('DeStore', [], deployOptions)
+        .then(instance => {
+          DeStore = instance;
+          config.contracts.deStore = instance.address;
+          console.log('Deloyed DeStore', instance.address);
+          DeStoreAddress.save(instance.address);
+          Ethereum.changeAccount(0);
+          return Ethereum.deStore().senderAdd({from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(1);
+          console.log(Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(2);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(3);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(4);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(5);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(6);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(7);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(8);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          Ethereum.changeAccount(9);
+          console.log('Receiver account: ', Ethereum.account);
+          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        })
+        .then(tx => {
+          t.end();
+        })
+        .catch(err => {
+          t.fail();
+          console.error(err);
         });
     });
   }
@@ -702,7 +771,7 @@ test('DeStore ===', t => {
 
   // DEPLOYING NEW DESTORE CONTRACT
 
-  reDeploy();
+  reDeployWithReceivers();
 
   t.end();
 });

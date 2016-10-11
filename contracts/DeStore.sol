@@ -31,7 +31,8 @@ contract DeStore {
     address _receiver, // receiver getting paid
     address _sender, // sender whos paying
     uint _amount, // hash sender is paying for
-    bytes _fileName  // name of the file that sender is paying for
+    bytes23 _hash1,  // 1st half of hash
+    bytes23 _hash2
   );
 
   /********************************************************
@@ -55,12 +56,12 @@ contract DeStore {
     uint[] sizes; // sizes of each hash
     uint[] values; // amount the file sender will send the hosts every day
     uint[] fileBalances; // the balance that particular hash has obtained
+    uint[] amountsPaid; // the amount paid with most recent transaction
     uint[] timesPaid; // the time a file was paid. it currently just gets updated by in future could make a list of payment times. initial is 0
     mapping(bytes => uint) fileIndexes; // so the sender knows what hash to add file balances ++ to and where to check the status
     bytes ipfsAddress;
     /*mapping(bytes => HostFile) files; // index of a certain file in files[]*/
     /*bytes23[] fileNames; // receiver will get an array of names to know whats avaliable inside files mapping*/
-    mapping(bytes => HostFile) hostFiles;
   }
 
   struct HostFile {
@@ -87,7 +88,6 @@ contract DeStore {
     uint[] sizes; // size of each file piece
     bytes23[2][] hashes; // each element contains half of entire hash [ [hashPart1, hashPart2], [], [] ]
     /*bytes[] fullHashes;*/
-    /*mapping (uint => address[]) receivers;*/
     address[] receivers;
     mapping (uint => address[]) hashReceivers;
     uint value; // amount this file is worth per byte
@@ -197,14 +197,23 @@ contract DeStore {
     return receivers[msg.sender].values;
   }
 
-  /*function receiverGetFileNames(bytes _fileName)
+  function receiverGetTimesPaid()
     external
     receiverStatus(msg.sender)
     constant
-    returns (bytes23[2][])
+    returns (uint[])
   {
-    return receivers[msg.sender].fileNames;
-  }*/
+    return receivers[msg.sender].timesPaid;
+  }
+
+  function receiverGetAmountsPaid()
+    external
+    receiverStatus(msg.sender)
+    constant
+    returns (uint[])
+  {
+    return receivers[msg.sender].amountsPaid;
+  }
 
   function receiverAddStorage(uint _bytes)
     external
@@ -293,7 +302,7 @@ contract DeStore {
       /*bytes[] memory _fullHashes;
       uint k = 0;
       for (uint i = 0; i < _hashes.length; i++) {
-        _fullHashes[k++] = addHashes(_hashes[i][0], _hashes[i][1]);
+        _fullHashes[k++] = combineHashes(_hashes[i][0], _hashes[i][1]);
       }*/
       senders[msg.sender].files[_fileName].exists = true;
       senders[msg.sender].files[_fileName].hashes = _hashes;
@@ -324,7 +333,8 @@ contract DeStore {
         receivers[availReceivers[j]].values.push(file.value);
         /*receivers[availReceivers[j]].fullHashes.push(file.fullHashes[g]);*/
         receivers[availReceivers[j]].timesPaid.push(0); // timesPaid for files is initially at 0
-        receivers[availReceivers[j]].fileIndexes[addHashes(file.hashes[g][0], file.hashes[g][1])] = receivers[availReceivers[j]].hashes.length - 1;
+        receivers[availReceivers[j]].amountsPaid.push(0);
+        receivers[availReceivers[j]].fileIndexes[combineHashes(file.hashes[g][0], file.hashes[g][1])] = receivers[availReceivers[j]].hashes.length - 1;
         receivers[availReceivers[j]].availStorage -= file.sizes[g];
         /*senders[msg.sender].files[_fileName].receivers[g].push(availReceivers[j]); init// was not able to use memory file*/
         // need to verifiy this reciever list
@@ -374,26 +384,19 @@ contract DeStore {
     return senders[msg.sender].files[_fileName].hashReceivers[_index];
   }
 
-  function senderSendMoney(address _receiver, bytes _fileName)
+  function senderSendMoney(address _receiver, bytes23 _hash1, bytes23 _hash2, bytes _fileName)
     senderInit(msg.sender)
     senderFileExists(msg.sender, _fileName)
     receiverInit(_receiver)
-    /*senderFileExists(msg.sender, _fileName)*/
   {
     uint tempValue = msg.value;
     receivers[_receiver].balance = receivers[_receiver].balance + msg.value;
     receivers[_receiver].totalGained = receivers[_receiver].totalGained + tempValue;
-    PayReceiver(msg.sender, _receiver, msg.value, _fileName);
+    uint _fileIndex = receivers[_receiver].fileIndexes[combineHashes(_hash1, _hash2)];
+    receivers[_receiver].timesPaid[_fileIndex] = now;
+    receivers[_receiver].amountsPaid[_fileIndex] = tempValue;
+    PayReceiver(_receiver, msg.sender, tempValue, _hash1, _hash2);
   }
-
-  /*function receiverAddHashes(address _receiverAddress, bytes23[2] _hashes)
-    private
-    receiverStatus(_receiverAddress)
-  {
-    for (uint i = 0; i < _hashes.length; i++) {
-      receivers[_receiverAddress].hashes.push(_hashes[i]);
-    }
-  }*/
 
   function senderCheckInit() public constant returns (bool) {
     return senders[msg.sender].status;
@@ -429,23 +432,9 @@ contract DeStore {
   ********************************************************/
 
   /**
-   * Lets receciver get a HostFile struct based on an input hash address
-   *
-   * @returns
-   */
-  /*function receiverGetFile(bytes __hash)
-    external
-    receiverStatus(msg.sender)
-    constant
-    returns (HostFile)
-  {
-    return receivers[msg.sender].hostFiles[__hash];
-  }*/
-
-  /**
    * Combines two hashes and returns the byte representation
    */
-  function addHashes(bytes23 _hash1, bytes23 _hash2) returns (bytes) {
+  function combineHashes(bytes23 _hash1, bytes23 _hash2) returns (bytes) {
     /*string memory resString = new string(_hash1.length + _hash2.length);*/
     bytes memory res = new bytes(46);
     uint k = 0;
@@ -462,6 +451,6 @@ contract DeStore {
     constant
     returns (uint)
   {
-    return receivers[_receiverAddress].fileIndexes[addHashes(_hash1, _hash2)];
+    return receivers[_receiverAddress].fileIndexes[combineHashes(_hash1, _hash2)];
   }
 }

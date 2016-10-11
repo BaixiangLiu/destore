@@ -3,7 +3,9 @@ const chunkFile = require('./chunkFile');
 const mountFile = require('./mountFile');
 const uploadDeStore = require('./uploadDeStore');
 const distribute = require('./distribute');
+const distribute2 = require('./distribute2');
 const payFile = require('./payFile');
+const payFile2 = require('./payFile2');
 const retrieveFile = require('./retrieveFile');
 const listUploadDb = require('./listUploadDb');
 
@@ -19,7 +21,9 @@ module.exports = {
   mountFile: mountFile,
   uploadDeStore: uploadDeStore,
   distribute: distribute,
+  distribute2: distribute2,
   payFile: payFile,
+  payFile2: payFile2,
   retrieveFile: retrieveFile,
   listUploadDb: listUploadDb,
   encrypt: encrypt,
