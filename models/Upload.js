@@ -8,16 +8,19 @@ const fs = require('fs-extra');
 // });
 
 const Schema = {
+  account: null,
   fileName: null,
   filePath: null,
   fileSize: null,
   hashAddress: null,
-  // contractAddress: null,
+  value: null,
   blocks: [],
   blockSizes: [],
   receivers: [],
   uploadTime: null,
-  isMounted: null
+  isMounted: null,
+  isUploaded: null,
+  timePaid: null
 };
 
 const dbCache = {};

@@ -4,11 +4,16 @@ const path = require('path');
 const fs = require('fs-extra');
 
 const Schema = {
+  account: null,
   fileSize: null,
   hashAddress: null,
   senderAddress: null,
+  timePaid: null, // time file was most recently paid for
+  amountPaid: null,
+  value: null,
   infoTime: null,
   isHosted: null,
+  filePath: null,
   hostTime: null
 };
 

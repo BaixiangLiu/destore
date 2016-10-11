@@ -19,8 +19,10 @@
   <body>
     <img class="logoAbs" src="../images/DeStoreWhite1.png" alt="DeStore Logo">
     <div class="public__id">
-        <span style="float: left; font-weight: 700; font-size: 30px">Host
-        </span>Account ID: <span id="accountID"></span>
+        <span style="float: left; font-weight: 700; font-size: 30px">Host <span class="receiver-status-display"></span></span>
+
+        Account ID: <span id="accountID"></span>
+
     </div>
     <div id="dash-wrap">
       <div id="dash" class="shadow grid2x2">
@@ -58,6 +60,7 @@
         </div>
       </div> <!-- 2x2 Grid -->
       <button class="btn btn-danger signOut">Sign Out</button>
+      <button class="btn btn-danger receiver-status"></button>
     </div>
   </body>
   <script>

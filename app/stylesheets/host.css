@@ -17,6 +17,16 @@ header {
   font-weight: 700;
 }
 
+.receiver-status {
+  float: right;
+  width: 140px;
+  height: 35px;
+}
+
+.receiver-status-display {
+  color: gray;
+  margin-left: 30px;
+}
 #dash-wrap {
   width: 900px;
   margin-left: auto;

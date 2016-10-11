@@ -26,6 +26,7 @@ $(document).ready(function() {
   $('#accountID').html(Ethereum.account);
   getStorageLimit();
 
+  getReceiverStatus();
   /** Checks Contract and Account Balance (every minute) */
   checkBalance();
   contractBalance();
@@ -114,7 +115,38 @@ $(document).ready(function() {
     hostAll();
   });
 
-
+  $('.receiver-status').on('click', function(e) {
+    $('.receiver-status').attr('disabled', true);
+    Ethereum.deStore().receiverGetStatus(Ethereum.account, {from: Ethereum.account})
+      .then(status => {
+        console.log(status);
+        if (status === true) {
+          Ethereum.deStore().receiverChangeStatus(false, {from: Ethereum.account })
+            .then(tx => {
+              $('.receiver-status').attr('disabled', false);
+              $('.receiver-status').text('Enable Account');
+              $('.receiver-status-display').text('OFF')
+            })
+            .catch(err => {
+              $('.receiver-status').attr('disabled', false);
+            });
+        } else {
+          Ethereum.deStore().receiverChangeStatus(true, {from: Ethereum.account })
+            .then(tx => {
+              $('.receiver-status').attr('disabled', false);
+              $('.receiver-status').text('Disable Account');
+              $('.receiver-status-display').text('ON')
+            })
+            .catch(err => {
+              $('.receiver-status').attr('disabled', false);
+            });
+        }
+      })
+      .catch(err => {
+        $('.receiver-status').attr('disabled', false);
+        console.error(err);
+      });
+  });
   /** ##### FUNCTIONS ##### */
 
   function checkBalance () {
@@ -201,6 +233,23 @@ $(document).ready(function() {
       .then(amount => {
         amount = bytesMag(amount);
         $('.dash__total__storage__value').text(amount);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
+  function getReceiverStatus() {
+    Ethereum.deStore().receiverGetStatus(Ethereum.account, {from: Ethereum.account})
+      .then(status => {
+        console.log(status);
+        if (status === true) {
+          $('.receiver-status').text('Disable Account');
+          $('.receiver-status-display').text('ON')
+        } else {
+          $('.receiver-status').text('Enable Account');
+          $('.receiver-status-display').text('OFF')
+        }
       })
       .catch(err => {
         console.error(err);

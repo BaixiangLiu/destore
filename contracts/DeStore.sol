@@ -92,6 +92,7 @@ contract DeStore {
     mapping (uint => address[]) hashReceivers;
     uint value; // amount this file is worth per byte
     bool exists;
+    uint timePaid;
   }
 
   /********************************************************
@@ -389,6 +390,7 @@ contract DeStore {
     senderFileExists(msg.sender, _fileName)
     receiverInit(_receiver)
   {
+    senders[msg.sender].files[_fileName].timePaid = now;
     uint tempValue = msg.value;
     receivers[_receiver].balance = receivers[_receiver].balance + msg.value;
     receivers[_receiver].totalGained = receivers[_receiver].totalGained + tempValue;
@@ -400,6 +402,15 @@ contract DeStore {
 
   function senderCheckInit() public constant returns (bool) {
     return senders[msg.sender].status;
+  }
+
+  function senderGetFileTimePaid(bytes _fileName)
+    senderInit(msg.sender)
+    senderFileExists(msg.sender, _fileName)
+    constant
+    returns (uint)
+  {
+    return senders[msg.sender].files[_fileName].timePaid;
   }
   /********************************************************
   * Used by Sender or Receiver

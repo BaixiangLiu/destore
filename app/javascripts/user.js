@@ -23,6 +23,11 @@ console.log(Ethereum.account);
 $('#accountID').html(Ethereum.account);
 
 updateTotalCost();
+// checks if to auto pay file every day
+autoPayFile();
+setInterval(function() {
+  autoPayFile();
+}, 1000 * 60 * 60 * 24);
 
 Sender.listUploadDb()
   .then((docs) => {
@@ -154,8 +159,7 @@ $('body').on('click', '.mount', function() {
     })
     .then(balance => {
       $(this).closest('.file').find('.recNum').remove();
-      $(this).closest('.file').find('.cost-value')
-        .text((fileSize * fileValue).toFixed(3));
+      // $(this).closest('.file').find('.cost-value').text((fileSize * fileValue).toFixed(3));
 
       $(this).replaceWith(`
         <input class="recNum" type="number" placeholder="# of hosts""></input>
@@ -213,6 +217,9 @@ $('body').on('click', '.retrieve', function() {
     });
 });
 
+
+
+
 // not being used anymore but could be used later 09/14/2016
 $('body').on('click', '.pay', function() {
   const fileName = path.basename($(this).closest('.file').data('filepath'));
@@ -251,12 +258,41 @@ function checkBalance() {
 }
 
 function updateTotalCost() {
-  const $totalCost = $('#cost');
-  const $fileCosts = $('.cost-value');
-  let totalCost = 0;
-  for (let i = 0; i < $fileCosts.length; i++) {
-    totalCost += Number($fileCosts.eq(i).text());
-  }
-  console.log(totalCost);
-  $totalCost.text(totalCost.toFixed(3));
+  Sender.listUploadDb()
+    .then(docs => {
+      let totalCost = 0;
+      docs.forEach(doc => {
+        totalCost += doc.fileSize * doc.value;
+      });
+      $('#cost').text(totalCost.toFixed(3));
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+function autoPayFile() {
+  Sender.listUploadDb()
+    .then(docs => {
+      // doc.timePaid is time stamp in seconds when the file was last paid for
+      docs.forEach(doc => {
+        // auto pays each month
+        if (Math.floor(Date.now() / 1000) > doc.timePaid + 1 * 60 * 24 * 30 && doc.timePaid !== null) {
+          payFile(doc.fileName);
+        }
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+function payFile(fileName) {
+  Sender.payFile2(fileName)
+    .then(balance => {
+      $('#balance').text(balance.toFixed(3));
+    })
+    .catch(err => {
+      console.error(err);
+    });
 }

@@ -35,7 +35,15 @@ module.exports = promisify((fileName, callback) => {
     });
     Promise.all(promises)
       .then(tx => {
-        callback(null, Ethereum.getBalanceEther());
+        return Ethereum.deStore().senderGetFileTimePaid(fileName);
+      })
+      .then(timePaid => {
+        Upload.db.update({account: Ethereum.account, fileName: fileName}, {$set: {timePaid: Number(timePaid.toString(10))}}, (err, num) => {
+          if (err) callback(err, null);
+          else {
+            callback(null, Ethereum.getBalanceEther());
+          }
+        });
       })
       .catch(err => {
         callback(err, null);
