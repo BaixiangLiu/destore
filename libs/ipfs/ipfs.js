@@ -174,6 +174,8 @@ class IPFS {
   unpin(hashAddress) {
     return this._ipfs.pin.rm(hashAddress);
   }
+
+  // make method for id
 }
 
 module.exports = new IPFS();
