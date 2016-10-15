@@ -1,0 +1,56 @@
+'use strict';
+const Ethereum = require('./../../../libs/ethereum/ethereum.js');
+const UploadDB = require('./../../../models/Upload.js');
+const promisify = require('es6-promisify');
+const nestedHexToAscii = require('./../../../libs/ethereum/nestedHexToAscii.js');
+
+/**
+* uploadDeStore2 gets hashAdddress of a file based on either filepath from db and uploads ONLY the hash with senderAddHash
+* @fileName {String} - name of file that has been mounted ex 'kb.png'
+* @value {Number} - the value of the file
+* @returns {Array} - the hashes added to the contract
+**/
+module.exports = promisify((fileName, callback) => {
+  const Upload = new UploadDB(Ethereum.account);
+  const options = Ethereum.defaults;
+  Upload.db.findOne({account: Ethereum.account, fileName: fileName}, (err, doc) => {
+    if (err || doc === null) {
+      callback(new Error('No Upload document was found of name ' + fileName), null);
+      return;
+    }
+    let hashArr;
+    let sizeArr;
+    const value = Ethereum.toWei(doc.value);
+    // for doc blocs to have existed would have needed to used method to break them up
+    if (doc.blocks.length >= 1) {
+      hashArr = doc.blocks;
+      sizeArr = doc.blockSizes;
+    } else {
+      hashArr = [doc.hashAddress];
+      sizeArr = [doc.fileSize];
+    }
+
+    const splitArr = [];
+    for (let i = 0; i < hashArr.length; i++) {
+      const half1 = hashArr[i].substring(0, 23);
+      const half2 = hashArr[i].substring(23, 46);
+      splitArr.push([half1, half2]);
+    }
+
+    const returnedSplitArr = [];
+    function recursive(hashArr) {
+      if (hashArr.length === 0) {
+        callback(err, returnedSplitArr);
+      }
+      Ethereum.deStore().senderAddHash(hashArr[0], options)
+        .then(tx => {
+          console.log('recursive');
+          returnedSplitArr.push(hashArr.shift());
+          recursive(hashArr);
+        })
+        .catch(err => {
+          callback(err, null);
+        });
+    }
+  });
+});
