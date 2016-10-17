@@ -38,15 +38,16 @@ module.exports = promisify((fileName, callback) => {
     }
 
     const returnedSplitArr = [];
-    function recursive(hashArr) {
+    function recursive(hashArr, sizeArr) {
       if (hashArr.length === 0) {
         callback(err, returnedSplitArr);
       }
-      Ethereum.deStore().senderAddHash(hashArr[0], options)
+      Ethereum.deStore().senderAddHash(hashArr[0], value,  options)
         .then(tx => {
           console.log('recursive');
           returnedSplitArr.push(hashArr.shift());
-          recursive(hashArr);
+          sizeArr.shift();
+          recursive(hashArr, sizeArr);
         })
         .catch(err => {
           callback(err, null);

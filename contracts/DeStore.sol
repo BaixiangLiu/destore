@@ -4,11 +4,11 @@ contract DeStore {
   * Events
   *********************************************************/
 
-  event AddReceiver (
+  /*event AddReceiver (
     address _receiver,
     bool status,
     uint index,
-    uint storage
+    uint storageBytes
   );
 
   event AddFile (
@@ -32,7 +32,7 @@ contract DeStore {
     uint _amount, // hash sender is paying for
     bytes23 _hash1,  // 1st half of hash
     bytes23 _hash2
-  );
+  );*/
 
   /********************************************************
   * Structs
@@ -44,16 +44,18 @@ contract DeStore {
     uint index; // position in receiverList[]
     uint balance;
     uint totalGained;
-    uint storage; // bytes
+    uint storageBytes; // bytes
 
     address[] senders; // the sender that stored the particular file hash
-    bytes23[2][] hashes; // each nested array contains half of entire hash
+    bytes23[2][] splitHashes;
+    bytes[] hashes; // each nested array contains half of entire hash
     uint[] sizes; // sizes of each hash
     uint[] values; // amount the file sender will send the hosts every day
     uint[] amountsPaid; // the amount paid with most recent transaction
     uint[] timesPaid; // the time a file was paid. it currently just gets updated by in future could make a list of payment times. initial is 0
     /*mapping(bytes => uint) fileIndexes; // so the sender knows what hash to add file balances ++ to and where to check the status*/
     mapping(bytes23 => mapping(bytes23 => uint)) fileIndexes;
+    mapping(bytes => uint) hashIndexes;
   }
 
   struct Sender {
@@ -148,15 +150,15 @@ contract DeStore {
     receivers[msg.sender].init = true;
     receivers[msg.sender].status = true;
     receivers[msg.sender].index = receiverList.length;
-    receivers[msg.sender].storage = _bytes;
+    receivers[msg.sender].storageBytes = _bytes;
     receiverList.push(msg.sender);
 
-    AddReceiver (
+    /*AddReceiver (
       msg.sender,
       receivers[msg.sender].status,
       receivers[msg.sender].index,
       receivers[msg.sender].storage
-    );
+    );*/
     return true;
   }
 
@@ -166,7 +168,7 @@ contract DeStore {
     constant
     returns (bytes23[2][])
   {
-    return receivers[msg.sender].hashes;
+    return receivers[msg.sender].splitHashes;
   }
 
   function receiverGetSenders()
@@ -218,14 +220,14 @@ contract DeStore {
     external
     receiverStatus(msg.sender)
   {
-    receivers[msg.sender].storage += _bytes;
+    receivers[msg.sender].storageBytes += _bytes;
   }
 
   function receiverChangeStorage(uint _bytes)
     external
     receiverStatus(msg.sender)
   {
-    receivers[msg.sender].storage = _bytes;
+    receivers[msg.sender].storageBytes = _bytes;
   }
 
   function receiverGetStorage()
@@ -234,7 +236,7 @@ contract DeStore {
     constant
     returns (uint)
   {
-    return receivers[msg.sender].storage;
+    return receivers[msg.sender].storageBytes;
   }
 
   function receiverChangeStatus(bool newStatus) public receiverInit(msg.sender) {
@@ -308,13 +310,13 @@ contract DeStore {
       /*senders[msg.sender].files[_fileName].fullHashes = _fullHashes;*/
       senders[msg.sender].files[_fileName].value = _value;
       senders[msg.sender].files[_fileName].sizes = _sizes;
-      AddFile(msg.sender, _fileName, _value);
+      /*AddFile(msg.sender, _fileName, _value);*/
     }
   }
 
-  function senderAddHash(bytes _hash, bytes _fileName, uint _value, uint _size)
+  function senderAddHash(bytes _hash, uint _size, uint _value)
     senderStatus(msg.sender)
-    senderHashNotExists(msg.sender, _fileName)
+    senderHashNotExists(msg.sender, _hash)
     external
   {
     senders[msg.sender].hashes[_hash].exists = true;
@@ -328,26 +330,26 @@ contract DeStore {
     senderHashExists(msg.sender, _hash)
     external
   {
-    Hash memory hash = senders[msg.sender].hashes[_hash];
+    Hash hash = senders[msg.sender].hashes[_hash];
     bool found = false;
     uint j = receiverIndex;
 
     while (found == false) {
-      if (hash.size < receivers[receiverList[j]].storage && msg.sender != receiverList[j]) {
+      if (hash.size < receivers[receiverList[j]].storageBytes && msg.sender != receiverList[j]) {
         receivers[receiverList[j]].senders.push(msg.sender);
         receivers[receiverList[j]].hashes.push(hash.hash);
         receivers[receiverList[j]].sizes.push(hash.size);
         receivers[receiverList[j]].values.push(hash.value);
         receivers[receiverList[j]].timesPaid.push(0); // timesPaid for files is initially at 0
         receivers[receiverList[j]].amountsPaid.push(0);
-        receivers[receiverList[j]].fileIndexes[hash.hash] = receivers[receiverList[j]].senders.length - 1;
+        receivers[receiverList[j]].hashIndexes[hash.hash] = receivers[receiverList[j]].senders.length - 1;
+        receivers[receiverList[j]].storageBytes -= hash.size;
 
-        receivers[receiverList[j]].storage -= file.sizes[g];
         hash.receivers.push(receiverList[j]);
         hash.receiverIndexes[receiverList[j]] = hash.receivers.length - 1;
       }
       j++;
-      if (j >= receivers.length) {
+      if (j >= receiverList.length) {
         j = 0;
       }
       if (j == receiverIndex) {
@@ -366,7 +368,8 @@ contract DeStore {
   * Gets hosts for every hash in the file
   *
   **/
-  function senderGetFileHost(bytes _fileName)
+
+  /*function senderGetFileHost(bytes _fileName)
     senderStatus(msg.sender)
     senderFileExists(msg.sender, _fileName)
     public
@@ -374,18 +377,14 @@ contract DeStore {
     File memory file = senders[msg.sender].files[_fileName];
     uint j = receiverIndex;
     for (uint g = 0; g < file.sizes.length; g++) {
-      if (file.sizes[g] < receivers[receiverList[j]].storage && msg.sender != receiverList[j]) {
+      if (file.sizes[g] < receivers[receiverList[j]].storageBytes && msg.sender != receiverList[j]) {
         receivers[receiverList[j]].senders.push(msg.sender);
         receivers[receiverList[j]].hashes.push(file.hashes[g]);
         receivers[receiverList[j]].sizes.push(file.sizes[g]);
-        receivers[receiverList[j]].values.push(file.value);
-        /*receivers[receiverList[j]].fullHashes.push(file.fullHashes[g]);*/
-        receivers[receiverList[j]].timesPaid.push(0); // timesPaid for files is initially at 0
+        receivers[receiverList[j]].values.push(file.value);        receivers[receiverList[j]].timesPaid.push(0); // timesPaid for files is initially at 0
         receivers[receiverList[j]].amountsPaid.push(0);
         receivers[receiverList[j]].fileIndexes[file.hashes[g][0]][file.hashes[g][1]] = receivers[receiverList[j]].hashes.length - 1;
-        receivers[receiverList[j]].storage -= file.sizes[g];
-        /*senders[msg.sender].files[_fileName].receivers[g].push(receiverList[j]); init// was not able to use memory file*/
-        // need to verifiy this reciever list
+        receivers[receiverList[j]].storageBytes -= file.sizes[g];
         senders[msg.sender].files[_fileName].receivers.push(receiverList[j]);
         senders[msg.sender].files[_fileName].hashReceivers[g].push(receiverList[j]);
       }
@@ -402,17 +401,7 @@ contract DeStore {
     } else {
       receiverIndex++;
     }
-  }
-
-  function senderGetFileHashes(bytes _fileName)
-    senderStatus(msg.sender)
-    senderFileExists(msg.sender, _fileName)
-    public
-    constant
-    returns (bytes23[2][])
-  {
-    return senders[msg.sender].files[_fileName].hashes;
-  }
+  }*/
 
   function senderGetFileReceivers(bytes _fileName)
     senderStatus(msg.sender)
@@ -432,7 +421,7 @@ contract DeStore {
     return senders[msg.sender].files[_fileName].hashReceivers[_index];
   }
 
-  function senderSendMoney(address _receiver, bytes23 _hash1, bytes23 _hash2, bytes _fileName)
+  /*function senderSendMoney(address _receiver, bytes23 _hash1, bytes23 _hash2, bytes _fileName)
     senderInit(msg.sender)
     senderFileExists(msg.sender, _fileName)
     receiverInit(_receiver)
@@ -446,6 +435,21 @@ contract DeStore {
     receivers[_receiver].balance = receivers[_receiver].balance + msg.value;
     receivers[_receiver].amountsPaid[_fileIndex] = tempValue;
     PayReceiver(_receiver, msg.sender, tempValue, _hash1, _hash2);
+  }*/
+
+  function senderSendMoney(address _receiver, bytes _hash)
+    senderInit(msg.sender)
+    senderHashExists(msg.sender, _hash)
+    receiverInit(_receiver)
+  {
+    uint tempValue = msg.value;
+    uint _hashIndex = receivers[_receiver].hashIndexes[_hash];
+
+    senders[msg.sender].hashes[_hash].timePaid = now;
+    receivers[_receiver].timesPaid[_hashIndex] = now;
+    receivers[_receiver].balance = receivers[_receiver].balance + msg.value;
+    receivers[_receiver].amountsPaid[_hashIndex] = tempValue;
+    /*PayReceiver(_receiver, msg.sender, tempValue, _hash1, _hash2);*/
   }
 
   function senderCheckInit() public constant returns (bool) {
