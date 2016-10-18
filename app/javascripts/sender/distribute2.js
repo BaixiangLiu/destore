@@ -20,7 +20,6 @@ module.exports = promisify((fileName, amount, callback) => {
     }
     Ethereum.deStore().senderGetFileHost(fileName, options)
       .then(tx => {
-        console.log('recursive');
         recursive(--amount);
       })
       .catch(err => {
@@ -40,7 +39,6 @@ module.exports = promisify((fileName, amount, callback) => {
         return Promise.all(promises);
       })
       .then(nestedAddresses => {
-        console.log(nestedAddresses);
         Upload.db.update({account: Ethereum.account, fileName: fileName}, {$set: {receivers: nestedAddresses, isUploaded: true}}, (err, num) => {
           if (err) callback(err, null);
           else {
@@ -52,7 +50,5 @@ module.exports = promisify((fileName, amount, callback) => {
         callback(err, null);
       });
   }
-
   recursive(amount);
-
 });

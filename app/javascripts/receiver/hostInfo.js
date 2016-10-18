@@ -18,7 +18,6 @@ module.exports = promisfy((callback) => {
   Ethereum.deStore().receiverGetTimesPaid(options),
   Ethereum.deStore().receiverGetAmountsPaid(options)])
     .then(resArr => {
-      console.log(resArr[4]);
       const hexHashes = resArr[0];
       const hashes = nestedHexToAscii(hexHashes);
       const senders = resArr[1];
@@ -41,8 +40,6 @@ module.exports = promisfy((callback) => {
           filePath: null,
           hostTime: null
         };
-        console.log('DOC IN HOSTINFO');
-        console.log(doc);
         const promise = new Promise((resolve, reject) => {
           Host.db.insert(doc, (err, res) => {
             if (!err && res !== null) docs.push(res);

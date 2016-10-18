@@ -55,7 +55,7 @@ test('Deploying new DeStore contract and adding a sender and receiver', t => {
 });
 
 test('Testing mountFile', t => {
-  const fileValue = 1;
+  const fileValue = 5;
   const fileValueMB = fileValue / 1024 / 1024;
   Sender.mountFile(__dirname + '/lemon.gif', fileValueMB)
     .then(res => {
@@ -68,22 +68,10 @@ test('Testing mountFile', t => {
     });
 });
 
-test('Testing chunkFile', t => {
-  Sender.chunkFile('lemon.gif')
-    .then(links => {
-      t.end();
-    })
-    .catch(err => {
-      console.error(err);
-      t.fail();
-    });
-});
-
-
 test('Testing uploadDeStore success', t => {
   Sender.uploadDeStore('lemon.gif')
     .then(res => {
-      t.equal(res[0], 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS', 'Expect has uploaded to equal first link address of sender file');
+      t.equal(res[0], 'QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW', 'Expect hash uploaded to equal');
       t.end();
     })
     .catch(err => {
@@ -104,9 +92,9 @@ test('Testing uploadDeStore fail with invalid file name', t => {
 });
 
 test('Testing distribute' , t => {
-  Sender.distribute('lemon.gif', 1)
+  Sender.distribute2('lemon.gif', 1)
     .then(addresses => {
-      t.equal(addresses[0], Ethereum.accounts[1], 'Expect address returned to equal to Ethereum.accounts[1]');
+      t.equal(addresses[0][0], Ethereum.accounts[1], 'Expect address returned to equal to Ethereum.accounts[1]');
       t.end();
     })
     .catch(err => {
@@ -119,8 +107,7 @@ test('Testing hostInfo', t => {
   Ethereum.changeAccount(1);
   Receiver.hostInfo()
     .then(infos => {
-      console.log(infos[0]);
-      t.equal(infos[0].hashAddress, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS', 'Expect hashAddress of 1st link to equal 1st link of added file');
+      t.equal(infos[0].hashAddress, 'QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW', 'Expect hash uploaded to equal');
       t.equal(infos[0].senderAddress, Ethereum.accounts[0], 'Expect Ethereum account to equal account used to send file');
       t.end();
     })
@@ -141,7 +128,7 @@ test('Testing hostInfo for duplicates', t => {
       return Sender.uploadDeStore('kb.png');
     })
     .then(hashes => {
-      return Sender.distribute('kb.png', 1);
+      return Sender.distribute2('kb.png', 1);
     })
     .then(receivers => {
       Ethereum.changeAccount(1);
@@ -162,7 +149,7 @@ test('Testing hostAll to see if it hosts all files', t => {
   Ethereum.changeAccount(1);
   Receiver.hostAll()
     .then(docs => {
-      t.equal(docs.length, 6, 'Except length of docs returned to equal 6');
+      t.equal(docs.length, 2, 'Except length of docs returned to equal 2');
       t.end();
     })
     .catch(err => {
@@ -174,15 +161,15 @@ test('Testing hostAll to see if it hosts all files', t => {
 test('Testing payFile', t => {
   Ethereum.changeAccount(0);
   const originalBalance = Ethereum.getBalanceEther();
-  Sender.payFile('lemon.gif')
+  Sender.payFile2('lemon.gif')
     .then(balance => {
-      t.equal(Math.round(balance), 73, 'Expect balance to equal 73');
+      t.equal(Math.round(balance), 95, 'Expect balance to equal 95');
       Ethereum.changeAccount(1);
       return Ethereum.deStore().receiverGetBalance({from: Ethereum.account});
     })
     .then(amount => {
       const added = Ethereum.toEther(amount);
-      t.equal(Math.round(added), 27, 'Except added to equal 27');
+      t.equal(Math.round(added), 5, 'Except added to equal 5');
       t.end();
     })
     .catch(err => {
@@ -195,7 +182,7 @@ test('Testing withdrawAll', t => {
   Ethereum.changeAccount(1);
   Receiver.withdrawAll()
     .then(amount => {
-      t.equal(Math.round(Ethereum.toEther(amount)), 27, 'Except withdraw amount to equal 27');
+      t.equal(Math.round(Ethereum.toEther(amount)), 5, 'Except withdraw amount to equal 5');
       t.end();
     })
     .catch(err => {
@@ -206,13 +193,13 @@ test('Testing withdrawAll', t => {
 
 test('Testing removeHash and listHostDb', t => {
   Ethereum.changeAccount(1);
-  Receiver.removeHash('QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS')
+  Receiver.removeHash('QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW')
     .then(returnPath => {
-      t.equal(returnPath, path.join(config.files.files, Ethereum.account, config.files.host, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS'), 'Expect path of file removed to equal the location of the file');
+      t.equal(returnPath, path.join(config.files.files, Ethereum.account, config.files.host, 'QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW'), 'Expect path of file removed to equal the location of the file');
       return Receiver.listHostDb();
     })
     .then(docs => {
-      t.equal(docs.length, 6, 'Expect length of docs retrieved to db to equal 6');
+      t.equal(docs.length, 2, 'Expect length of docs retrieved to db to equal 2');
       t.end();
     })
     .catch(err => {
@@ -227,21 +214,6 @@ test('Testing retrieveFile', t => {
     .then(returnedPath => {
       t.equal(returnedPath, path.join(config.files.files, Ethereum.account, config.files.download, 'lemon.gif'), 'Expect retrieved path to equal config files download location and file name');
       lol(returnedPath);
-      t.end();
-    })
-    .catch(err => {
-      console.error(err);
-      t.fail();
-    });
-});
-
-test('Testing hostInfo for files paid info', t => {
-  Ethereum.changeAccount(1);
-  Receiver.hostInfo()
-    .then(infos => {
-      console.log(infos[0]);
-      // t.equal(infos[0].hashAddress, 'QmT6aQLRNWbDf38qHGmaUUw8Q4E3fCnn7wKec2haVrQoSS', 'Expect hashAddress of 1st link to equal 1st link of added file');
-      // t.equal(infos[0].senderAddress, Ethereum.accounts[0], 'Expect Ethereum account to equal account used to send file');
       t.end();
     })
     .catch(err => {

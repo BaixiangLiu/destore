@@ -58,10 +58,9 @@ contract DeStore {
     uint[] fileBalances; // the balance that particular hash has obtained
     uint[] amountsPaid; // the amount paid with most recent transaction
     uint[] timesPaid; // the time a file was paid. it currently just gets updated by in future could make a list of payment times. initial is 0
-    mapping(bytes => uint) fileIndexes; // so the sender knows what hash to add file balances ++ to and where to check the status
+    /*mapping(bytes => uint) fileIndexes; */
+    mapping(bytes23 => mapping(bytes23 => uint)) fileIndexes; // so the sender knows what hash to add file balances ++ to and where to check the status
     bytes ipfsAddress;
-    /*mapping(bytes => HostFile) files; // index of a certain file in files[]*/
-    /*bytes23[] fileNames; // receiver will get an array of names to know whats avaliable inside files mapping*/
   }
 
   struct HostFile {
@@ -69,9 +68,6 @@ contract DeStore {
     bytes _name;
     bytes23[2] hash;
     uint balance;
-    // get a date last paid
-    // whether or not this is enabled
-    // to delete the file requires sending notification to the sender
   }
 
   struct Sender {
@@ -335,7 +331,7 @@ contract DeStore {
         /*receivers[availReceivers[j]].fullHashes.push(file.fullHashes[g]);*/
         receivers[availReceivers[j]].timesPaid.push(0); // timesPaid for files is initially at 0
         receivers[availReceivers[j]].amountsPaid.push(0);
-        receivers[availReceivers[j]].fileIndexes[combineHashes(file.hashes[g][0], file.hashes[g][1])] = receivers[availReceivers[j]].hashes.length - 1;
+        receivers[availReceivers[j]].fileIndexes[file.hashes[g][0]][file.hashes[g][1]] = receivers[availReceivers[j]].hashes.length - 1;
         receivers[availReceivers[j]].availStorage -= file.sizes[g];
         /*senders[msg.sender].files[_fileName].receivers[g].push(availReceivers[j]); init// was not able to use memory file*/
         // need to verifiy this reciever list
@@ -394,7 +390,8 @@ contract DeStore {
     uint tempValue = msg.value;
     receivers[_receiver].balance = receivers[_receiver].balance + msg.value;
     receivers[_receiver].totalGained = receivers[_receiver].totalGained + tempValue;
-    uint _fileIndex = receivers[_receiver].fileIndexes[combineHashes(_hash1, _hash2)];
+
+    uint _fileIndex = receivers[_receiver].fileIndexes[_hash1][_hash2];
     receivers[_receiver].timesPaid[_fileIndex] = now;
     receivers[_receiver].amountsPaid[_fileIndex] = tempValue;
     PayReceiver(_receiver, msg.sender, tempValue, _hash1, _hash2);
@@ -462,6 +459,6 @@ contract DeStore {
     constant
     returns (uint)
   {
-    return receivers[_receiverAddress].fileIndexes[combineHashes(_hash1, _hash2)];
+    return receivers[_receiverAddress].fileIndexes[_hash1][_hash2];
   }
 }
