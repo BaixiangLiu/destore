@@ -92,7 +92,7 @@ test('Testing uploadDeStore fail with invalid file name', t => {
 });
 
 test('Testing distribute' , t => {
-  Sender.distribute2('lemon.gif', 1)
+  Sender.distribute3('lemon.gif', 1)
     .then(addresses => {
       t.equal(addresses[0][0], Ethereum.accounts[1], 'Expect address returned to equal to Ethereum.accounts[1]');
       t.end();
@@ -128,7 +128,7 @@ test('Testing hostInfo for duplicates', t => {
       return Sender.uploadDeStore('kb.png');
     })
     .then(hashes => {
-      return Sender.distribute2('kb.png', 1);
+      return Sender.distribute3('kb.png', 1);
     })
     .then(receivers => {
       Ethereum.changeAccount(1);

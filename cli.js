@@ -98,7 +98,7 @@ if (program.testrpc) {
   Ethereum.changeAccount(0);
   const deployOptions = {
     from: Ethereum.account,
-    gas: 3000000,
+    gas: 4500000,
     gasValue: 20000000000
   };
   const storage = 5 * 1024 * 1024 * 1024;

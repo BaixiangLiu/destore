@@ -4,6 +4,7 @@ const mountFile = require('./mountFile');
 const uploadDeStore = require('./uploadDeStore');
 const distribute = require('./distribute');
 const distribute2 = require('./distribute2');
+const distribute3 = require('./distribute3');
 const payFile = require('./payFile');
 const payFile2 = require('./payFile2');
 const retrieveFile = require('./retrieveFile');
@@ -22,6 +23,7 @@ module.exports = {
   uploadDeStore: uploadDeStore,
   distribute: distribute,
   distribute2: distribute2,
+  distribute3: distribute3,
   payFile: payFile,
   payFile2: payFile2,
   retrieveFile: retrieveFile,

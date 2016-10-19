@@ -176,7 +176,7 @@ $('body').on('click', '.distribute', function() {
   var fileName = path.basename($(this).closest('.file').data('filepath'));
   var userNum = $(this).closest('.file').find('.recNum').val() || 3;
   console.log(userNum);
-  Sender.distribute2(fileName, userNum)
+  Sender.distribute3(fileName, userNum)
     .then((res) => {
       console.log(res);
       $(this).closest('.file').find('.recNum').remove();

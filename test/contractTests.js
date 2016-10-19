@@ -789,5 +789,42 @@ test('DeStore ===', t => {
 
   reDeployWithReceivers();
 
+  t.test('Test senderAddHash', t => {
+    const splitArr1 = helper.split(hashObjs.hash1);
+    const splitArr2 = helper.split(hashObjs.hash2);
+    const splitArr3 = helper.split(hashObjs.hash3);
+    const splitArr4 = helper.split(hashObjs.hash4);
+
+    const value = 5;
+    const size = 5;
+    Ethereum.changeAccount(0);
+    DeStore.senderAddHash(splitArr1, value, size)
+      .then(tx => {
+        t.ok(tx, 'senderAddHash tx');
+        return DeStore.senderAddHash(splitArr2, value, size);
+      })
+      .then(tx => {
+        return DeStore.senderAddHash(splitArr3, value, size);
+      })
+      .then(tx => {
+        return DeStore.senderAddHash(splitArr4, value, size);
+      })
+      .then(tx => {
+        return DeStore.senderGetHashes();
+      })
+      .then(nestedByteArray => {
+        const hashes = helper.getAllHashes(nestedByteArray);
+        t.equal(hashes[0], hashObjs.hash1, 'Expect hash1 to equal input');
+        t.equal(hashes[1], hashObjs.hash2, 'Expect hash2 to equal input');
+        t.equal(hashes[2], hashObjs.hash3, 'Expect hash3 to equal input');
+        t.equal(hashes[3], hashObjs.hash4, 'Expect hash4 to equal input');
+        t.end();
+      })
+      .catch(err => {
+        console.error(err);
+        t.fail();
+      });
+  });
+
   t.end();
 });
