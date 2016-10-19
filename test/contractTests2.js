@@ -87,7 +87,8 @@ const hashObjs = {
   hash2: 'QmcSwTAwqbtGTt1MBobEjKb8rPwJJzfCLorLMs5m97axDW',
   hash3: 'QmRtDCqYUyJGWhGRhk1Bbk4PvE9mbCS1HKkDAo6xUAqN4H',
   hash4: 'QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH',
-  hash5: 'QmezZrSDBQhCiYwVn3AvAbiryxjWWmAiQEdjjNSuQvAB9Z'
+  hash5: 'QmezZrSDBQhCiYwVn3AvAbiryxjWWmAiQEdjjNSuQvAB9Z',
+  splitArr1: ['QmUNLLsPACCz1vLxQVkXqqL', 'X5R1X345qqfHbsf67hvA3Nn']
 };
 
 function reDeploy() {
@@ -109,12 +110,13 @@ function reDeploy() {
   });
 }
 
+let DeStore;
 function reDeployWithReceivers() {
   test('Deploying new DeStore contract with receivers', t => {
     Ethereum.changeAccount(0);
     const deployOptions = {
       from: Ethereum.account,
-      gas: 4000000,
+      gas: 4500000,
       gasValue: 20000000000
     };
     const storage = 5 * 1024 * 1024 * 1024;
@@ -129,47 +131,22 @@ function reDeployWithReceivers() {
       .then(tx => {
         Ethereum.changeAccount(1);
         console.log(Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
       })
       .then(tx => {
         Ethereum.changeAccount(2);
         console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
       })
       .then(tx => {
         Ethereum.changeAccount(3);
         console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
       })
       .then(tx => {
         Ethereum.changeAccount(4);
         console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
-      })
-      .then(tx => {
-        Ethereum.changeAccount(5);
-        console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
-      })
-      .then(tx => {
-        Ethereum.changeAccount(6);
-        console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
-      })
-      .then(tx => {
-        Ethereum.changeAccount(7);
-        console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
-      })
-      .then(tx => {
-        Ethereum.changeAccount(8);
-        console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
-      })
-      .then(tx => {
-        Ethereum.changeAccount(9);
-        console.log('Receiver account: ', Ethereum.account);
-        return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+        return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
       })
       .then(tx => {
         t.end();
@@ -181,6 +158,9 @@ function reDeployWithReceivers() {
   });
 }
 
+/*******************************************
+DEPLOYING NEW DESTORE CONTRACT
+********************************************/
 reDeployWithReceivers();
 
 test('Check functionality of senderSendMoney, receiverGetBalance, and receiverWithdraw', t => {
@@ -212,4 +192,46 @@ test('Check functionality of senderSendMoney, receiverGetBalance, and receiverWi
       console.error(err);
       t.fix();
     });
+
+  /*******************************************
+  DEPLOYING NEW DESTORE CONTRACT
+  ********************************************/
+  reDeployWithReceivers();
+  t.test('Testing receiverAdd value to see if it prevents files from being hosted', t => {
+    Ethereum.changeAccount(5);
+    const storage = 5 * 1024 * 1024 * 1024;
+    const value = 50;
+    Ethereum.deStore().receiverAdd(storage, value, {from: Ethereum.account})
+      .then(tx => {
+        return Ethereum.deStore().receiverGetValue({from: Ethereum.account});
+      })
+      .then(returnedValue => {
+        t.equal(Number(returnedValue.toString()), value, 'Expect receiverGetValue to return input value');
+        Ethereum.changeAccount(0);
+        return Ethereum.deStore().senderAddHash(hashObjs.splitArr1, 40, 100, {from: Ethereum.account});
+      })
+      .then(tx => {
+        const promises = [];
+        promises.push(
+          Ethereum.deStore().senderGetHashHost(hashObjs.splitArr1, {from: Ethereum.account}),
+          Ethereum.deStore().senderGetHashHost(hashObjs.splitArr1, {from: Ethereum.account}),
+          Ethereum.deStore().senderGetHashHost(hashObjs.splitArr1, {from: Ethereum.account}),
+          Ethereum.deStore().senderGetHashHost(hashObjs.splitArr1, {from: Ethereum.account}),
+          Ethereum.deStore().senderGetHashHost(hashObjs.splitArr1, {from: Ethereum.account})
+        );
+        return Promise.all(promises);
+      })
+      .then(tx => {
+        Ethereum.changeAccount(5);
+        return Ethereum.deStore().receiverGetHashes({from: Ethereum.account});
+      })
+      .then(nestedByteArray => {
+        t.equal(nestedByteArray.length, 0, 'Expect length of returned array to be 0');
+        t.end();
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+
 });

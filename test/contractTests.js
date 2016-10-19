@@ -149,47 +149,47 @@ test('DeStore ===', t => {
         .then(tx => {
           Ethereum.changeAccount(1);
           console.log(Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(2);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(3);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(4);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(5);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(6);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(7);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(8);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           Ethereum.changeAccount(9);
           console.log('Receiver account: ', Ethereum.account);
-          return Ethereum.deStore().receiverAdd(storage, {from: Ethereum.account});
+          return Ethereum.deStore().receiverAdd(storage, 0, {from: Ethereum.account});
         })
         .then(tx => {
           t.end();
@@ -225,7 +225,7 @@ test('DeStore ===', t => {
   });
 
   t.test('Add receiver to DeStore with storage of 500', t => {
-    DeStore.receiverAdd(500)
+    DeStore.receiverAdd(500, 0)
       .then(tx => {
         return DeStore.receiverGetStorage();
       })
@@ -314,7 +314,7 @@ test('DeStore ===', t => {
 
   t.test('Check that the receiver index increases when adding receivers and that adding in other intital storage works', t => {
     Ethereum.changeAccount(1);
-    DeStore.receiverAdd(1100, {from: Ethereum.account})
+    DeStore.receiverAdd(1100, 0, {from: Ethereum.account})
       .then(tx => {
         t.ok(tx, '1st receiverAdd transaction was sucessfully performed');
         return Ethereum.getEventLogs('DeStore', DeStore.address, 'AddReceiver');
@@ -324,7 +324,7 @@ test('DeStore ===', t => {
         t.equal(log.index.c[0], 1, 'Expect AddReceiver index to equal 1 after adding 2nd receiver');
         t.equal(log.availStorage.c[0], 1100, 'Expect AddReceiver availStorage to equal 1100');
         Ethereum.changeAccount(2);
-        return DeStore.receiverAdd(1500, {from: Ethereum.account});
+        return DeStore.receiverAdd(1500, 0, {from: Ethereum.account});
       })
       .then(tx => {
         t.ok(tx, '2st receiverAdd transaction was sucessfully performed');
@@ -448,11 +448,11 @@ test('DeStore ===', t => {
     DeStore.senderAdd()
       .then(tx => {
         return Promise.all([
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[1]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[2]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[3]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[4]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[5]})
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[1]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[2]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[3]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[4]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[5]})
         ]);
       })
       .then(txArr => {
@@ -626,11 +626,11 @@ test('DeStore ===', t => {
     DeStore.senderAdd()
       .then(tx => {
         return Promise.all([
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[1]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[2]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[3]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[4]}),
-          DeStore.receiverAdd(5000, {from: Ethereum.accounts[5]})
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[1]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[2]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[3]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[4]}),
+          DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[5]})
         ]);
       })
       .then(tx => {
@@ -721,7 +721,7 @@ test('DeStore ===', t => {
     let splitArray;
     DeStore.senderAdd()
       .then(tx => {
-        return DeStore.receiverAdd(5000, {from: Ethereum.accounts[1]});
+        return DeStore.receiverAdd(5000, 0, {from: Ethereum.accounts[1]});
       })
       .then(tx => {
         return DeStore.receiverGetBalance({from: Ethereum.accounts[1]});

@@ -18,7 +18,6 @@ contract DeStore {
   mapping (address => Receiver) private receivers;
   mapping (address => Sender) private senders;
 
-
   /********************************************************
   * STRUCTS
   *********************************************************/
@@ -31,6 +30,7 @@ contract DeStore {
     uint totalGained;
     uint filesCount;
     uint availStorage; // in bytes
+    uint value; // value amount per byte willing to host
 
     // hashes table
     address[] senders;
@@ -121,13 +121,14 @@ contract DeStore {
     return receivers[msg.sender].init;
   }
 
-  function receiverAdd(uint _bytes) external {
+  function receiverAdd(uint _bytes, uint _value) external {
     if (receivers[msg.sender].init == true) return;
-
     receivers[msg.sender].init = true;
     receivers[msg.sender].status = true;
     receivers[msg.sender].index = availReceivers.length;
     receivers[msg.sender].availStorage = _bytes;
+    receivers[msg.sender].value = _value;
+
     availReceivers.push(msg.sender);
 
     AddReceiver (
@@ -145,8 +146,28 @@ contract DeStore {
     }
   }
 
-  function receiverGetStatus(address _receiverAddress) public constant returns (bool) {
+  function receiverGetStatus(address _receiverAddress)
+    public
+    constant
+    returns (bool)
+  {
     return receivers[_receiverAddress].status;
+  }
+
+  function receiverChangeValue(uint _value)
+    receiverStatus(msg.sender)
+    external
+  {
+    receivers[msg.sender].value = _value;
+  }
+
+  function receiverGetValue()
+    receiverStatus(msg.sender)
+    external
+    constant
+    returns (uint)
+  {
+    return receivers[msg.sender].value;
   }
 
   function receiverChangeStorage(uint _bytes)
@@ -272,7 +293,6 @@ contract DeStore {
     AddSender(msg.sender);
   }
 
-
   function senderAddHash(bytes23[2] _hash, uint _value, uint _size)
     senderStatus(msg.sender)
     senderHashNotExists(msg.sender, _hash)
@@ -309,7 +329,9 @@ contract DeStore {
     bool isHosted = false;
     // 0
     while (isHosted == false) {
-      if (hash.size < receivers[availReceivers[j]].availStorage && msg.sender != availReceivers[j]) {
+      if (hash.size < receivers[availReceivers[j]].availStorage &&
+          hash.value > receivers[availReceivers[j]].value &&
+          msg.sender != availReceivers[j]) {
         receivers[availReceivers[j]].senders.push(msg.sender);
         receivers[availReceivers[j]].hashes.push(_hash);
         receivers[availReceivers[j]].sizes.push(hash.size);
@@ -491,14 +513,8 @@ contract DeStore {
     external
   {
     if (_hashes.length == _sizes.length) {
-      /*bytes[] memory _fullHashes;
-      uint k = 0;
-      for (uint i = 0; i < _hashes.length; i++) {
-        _fullHashes[k++] = combineHashes(_hashes[i][0], _hashes[i][1]);
-      }*/
       senders[msg.sender].files[_fileName].exists = true;
       senders[msg.sender].files[_fileName].hashes = _hashes;
-      /*senders[msg.sender].files[_fileName].fullHashes = _fullHashes;*/
       senders[msg.sender].files[_fileName].value = _value;
       senders[msg.sender].files[_fileName].sizes = _sizes;
       AddFile(msg.sender, _fileName, _value);

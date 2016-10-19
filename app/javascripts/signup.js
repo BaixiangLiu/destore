@@ -257,7 +257,7 @@ $(document).ready(function() {
   }
 
   function receiverAdd(amount) {
-    Ethereum.deStore().receiverAdd(amount, {
+    Ethereum.deStore().receiverAdd(amount, 0, {
       from: Ethereum.account,
       gas: 1000000
     })
